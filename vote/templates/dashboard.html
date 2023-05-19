@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <h2 class="dashboard-heading">Hi, {{ user.username }}</h2>
+  <div class="dashboard-links">
+    <a href="{% url 'position' %}" class="dashboard-link">Click Here To Vote</a>
+    <a href="{% url 'result' %}" class="dashboard-link">Click Here To See Result</a>
+  </div>
+{% endblock %}
