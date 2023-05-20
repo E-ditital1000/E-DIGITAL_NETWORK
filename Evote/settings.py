@@ -23,10 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-%5pjt-7je2m7qf8g7&-ssjqa!1ih+160(8^fw5w!0tgb!8a5nl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
-ALLOWED_HOSTS = ['tech03.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -66,9 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'allowed_hosts': [
-                'tech03.pythonanywhere.com',  # Add your PythonAnywhere domain here
-            ],
+            
         },
     },
 ]
@@ -121,12 +119,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/your_username/static/'
+STATIC_URL = '/static/'
 LOGIN_URL = '/login/'
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
-MEDIA_URL = '/your_username/media/'
+MEDIA_URL = '/media/'
 
 
 # Default primary key field type
