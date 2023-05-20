@@ -67,7 +67,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'allowed_hosts': [
-                'your_username.pythonanywhere.com',  # Add your PythonAnywhere domain here
+                'tech03.pythonanywhere.com',  # Add your PythonAnywhere domain here
             ],
         },
     },
