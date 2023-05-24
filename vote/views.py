@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
 
- 
 
 def homeView(request):
     return render(request, "home.html")
@@ -22,13 +21,26 @@ def registrationView(request):
         if form.is_valid():
             cd = form.cleaned_data
             if cd['password'] == cd['confirm_password']:
+                national_id = cd['national_id']
+
+                # Check if the national ID exists in the database and is not registered by another user
+                if Profile.objects.filter(national_id=national_id, user__isnull=False).exists():
+                    return render(request, "registration.html", {'form': form, 'note': 'This ID has already been used.'})
+
+                # Validate the ID range
+                start_id = 1000
+                end_id = 2000
+                entered_id = int(national_id.replace('ID', ''))
+                if not (start_id <= entered_id <= end_id):
+                    return render(request, "registration.html", {'form': form, 'note': 'Invalid ID. Please enter a valid ID within the specified range.'})
+
                 user = form.save(commit=False)
                 user.set_password(cd['password'])
                 user.save()
 
                 # Save additional profile fields
                 profile = Profile.objects.create(user=user, district=cd['district'], county=cd['county'],
-                                                 national_id=cd['national_id'], citizenship=cd['citizenship'],
+                                                 national_id=national_id, citizenship=cd['citizenship'],
                                                  age=cd['age'], residency_proof=request.FILES['residency_proof'])
                 messages.success(request, 'You have been registered.')
                 return redirect('home')
@@ -55,8 +67,6 @@ def loginView(request):
         return render(request, "login.html")
 
 
-
-
 @login_required
 def logoutView(request):
     logout(request)
@@ -76,10 +86,11 @@ def positionView(request):
 
 @login_required
 def candidateView(request, pos):
-    obj = get_object_or_404(Position, pk = pos)
+    obj = get_object_or_404(Position, pk=pos)
     if request.method == "POST":
 
-        temp = ControlVote.objects.get_or_create(user=request.user, position=obj)[0]
+        temp = ControlVote.objects.get_or_create(
+            user=request.user, position=obj)[0]
 
         if temp.status == False:
             temp2 = Candidate.objects.get(pk=request.POST.get(obj.title))
@@ -89,10 +100,11 @@ def candidateView(request, pos):
             temp.save()
             return HttpResponseRedirect('/position/')
         else:
-            messages.success(request, 'you have already been voted this position.')
-            return render(request, 'candidate.html', {'obj':obj})
+            messages.success(
+                request, 'you have already been voted this position.')
+            return render(request, 'candidate.html', {'obj': obj})
     else:
-        return render(request, 'candidate.html', {'obj':obj})
+        return render(request, 'candidate.html', {'obj': obj})
 
 
 @login_required

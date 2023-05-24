@@ -5,33 +5,6 @@
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-
-    <!-- Extended Profile Fields -->
-    <div>
-      <label for="{{ form.district.id_for_label }}">District:</label>
-      {{ form.district }}
-    </div>
-    <div>
-      <label for="{{ form.county.id_for_label }}">County:</label>
-      {{ form.county }}
-    </div>
-    <div>
-      <label for="{{ form.national_id.id_for_label }}">National ID:</label>
-      {{ form.national_id }}
-    </div>
-    <div>
-      <label for="{{ form.citizenship.id_for_label }}">Citizenship:</label>
-      {{ form.citizenship }}
-    </div>
-    <div>
-      <label for="{{ form.age.id_for_label }}">Age:</label>
-      {{ form.age }}
-    </div>
-    <div>
-      <label for="{{ form.residency_proof.id_for_label }}">Residency Proof:</label>
-      {{ form.residency_proof }}
-    </div>
-
     <button type="submit">Register</button>
   </form>
 {% endblock %}
