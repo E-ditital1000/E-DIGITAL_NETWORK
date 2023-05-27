@@ -9,11 +9,12 @@ from .models import Candidate, Position, ControlVote
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
+import os
+
 
 
 def homeView(request):
     return render(request, "home.html")
-
 
 def registrationView(request):
     if request.method == "POST":
@@ -42,6 +43,11 @@ def registrationView(request):
                 profile = Profile.objects.create(user=user, district=cd['district'], county=cd['county'],
                                                  national_id=national_id, citizenship=cd['citizenship'],
                                                  age=cd['age'], residency_proof=request.FILES['residency_proof'])
+
+                # Update file permissions for the residency_proof file
+                file_path = profile.residency_proof.path
+                os.chmod(file_path, 0o644)  # Set the desired file permissions (e.g., read and write for owner, read for others)
+
                 messages.success(request, 'You have been registered.')
                 return redirect('home')
             else:
@@ -50,6 +56,7 @@ def registrationView(request):
         form = RegistrationForm()
 
     return render(request, "registration.html", {'form': form})
+
 
 
 def dashboardView(request):
