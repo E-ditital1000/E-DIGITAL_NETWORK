@@ -18,7 +18,7 @@ def homeView(request):
 
 def registrationView(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST, request.FILES)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             if cd['password'] == cd['confirm_password']:
@@ -42,20 +42,16 @@ def registrationView(request):
                 # Save additional profile fields
                 profile = Profile.objects.create(user=user, district=cd['district'], county=cd['county'],
                                                  national_id=national_id, citizenship=cd['citizenship'],
-                                                 age=cd['age'], residency_proof=request.FILES['residency_proof'])
-
-                # Update file permissions for the residency_proof file
-                file_path = profile.residency_proof.path
-                os.chmod(file_path, 0o644)  # Set the desired file permissions (e.g., read and write for owner, read for others)
-
+                                                 age=cd['age'])
                 messages.success(request, 'You have been registered.')
                 return redirect('home')
             else:
                 return render(request, "registration.html", {'form': form, 'note': 'Passwords must match.'})
     else:
         form = RegistrationForm()
-
+    
     return render(request, "registration.html", {'form': form})
+
 
 
 

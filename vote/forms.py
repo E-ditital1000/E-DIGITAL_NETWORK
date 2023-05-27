@@ -9,7 +9,6 @@ class RegistrationForm(forms.ModelForm):
     national_id = forms.CharField(max_length=50)
     citizenship = forms.BooleanField(required=True)
     age = forms.IntegerField(min_value=18)
-    residency_proof = forms.FileField()
 
     class Meta:
         model = User
@@ -29,7 +28,6 @@ class RegistrationForm(forms.ModelForm):
         # Additional eligibility checks
         citizenship = cleaned_data.get('citizenship')
         age = cleaned_data.get('age')
-        residency_proof = cleaned_data.get('residency_proof')
 
         if not citizenship:
             raise forms.ValidationError("You must be a citizen to register.")
@@ -37,12 +35,10 @@ class RegistrationForm(forms.ModelForm):
         if age < 18:
             raise forms.ValidationError("You must be at least 18 years old to register.")
 
-        if not residency_proof:
-            raise forms.ValidationError("Residency proof is required.")
-
         # Additional checks as needed
 
         return cleaned_data
+
 
 class ChangeForm(forms.ModelForm):
     district = forms.CharField(max_length=50)

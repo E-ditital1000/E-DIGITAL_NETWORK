@@ -8,6 +8,7 @@ class Position(models.Model):
 
     def __str__(self):
         return self.title
+    
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     district = models.CharField(max_length=50)
@@ -15,10 +16,10 @@ class Profile(models.Model):
     national_id = models.CharField(max_length=50)
     citizenship = models.BooleanField(default=False)
     age = models.IntegerField()
-    residency_proof = models.FileField(upload_to='residency_proofs')
 
     def __str__(self):
         return self.user.username
+
 
 class Candidate(models.Model):
     name = models.CharField(max_length=50)
