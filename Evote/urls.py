@@ -33,10 +33,9 @@ urlpatterns = [
     path('result/', views.resultView, name='result'),
     path('changepass/', views.changePasswordView, name='changepass'),
     path('editprofile/', views.editProfileView, name='editprofile'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
-
-
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
     

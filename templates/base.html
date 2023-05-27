@@ -148,6 +148,28 @@
       cursor: pointer;
     }
  
+  
+    blockquote {
+  font-family: 'Droid Sans', sans-serif;
+  border-left: none;
+}
+
+.inner-block {
+  margin-left: 38%;
+  overflow: hidden;
+  border-radius: 17px;
+  background-color: #140691;
+  margin-top: 25px;
+  padding: 20px;
+  color: white;
+  width: 325px;
+  box-shadow: 0px 5px 20px 5px rgba(0, 0, 0, 0.75);
+}
+
+.block-text {
+  font-size: 19px;
+  margin-top: 13px;
+}
 
 
   
@@ -394,6 +416,56 @@ img {
     {% block content %}
     {% endblock %}
   </div>
+  <script>
+const quotes = [
+  {
+    text: "If you don't vote, you lose the right to complain.",
+    author: "George Carlin",
+    likes: 42,
+  },
+  {
+    text: "The ballot is stronger than the bullet.",
+    author: "Abraham Lincoln",
+    likes: 87,
+  },
+  {
+    text: "Voting is the expression of our commitment to ourselves, one another, this country, and this world.",
+    author: "Sharon Salzberg",
+    likes: 63,
+  },
+  {
+    text: "Voting is the cornerstone of democracy.",
+    author: "Abraham Bedell",
+    likes: 28,
+  },
+  {
+    text: "Your vote, your voice, your power.",
+    author: "Joanna B. Roberts",
+    likes: 42,
+  },
+  // Add more quotes here
+];
+
+function getRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  return quotes[randomIndex];
+}
+
+function updateQuote() {
+  const quote = getRandomQuote();
+  document.getElementById("quoteText").textContent = quote.text;
+  document.getElementById("quoteAuthor").textContent = quote.author;
+  document.getElementById("quoteLikes").textContent = quote.likes;
+}
+
+// Update the quote initially
+updateQuote();
+
+// Add an event listener to update the quote when the heart icon is clicked
+const heartIcon = document.querySelector(".fa-heart");
+heartIcon.addEventListener("click", updateQuote);
+
+  </script>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>

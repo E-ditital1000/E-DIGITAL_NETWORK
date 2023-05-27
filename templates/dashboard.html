@@ -8,4 +8,29 @@
     <a href="{% url 'position' %}" class="dashboard-link">Click Here To Vote</a>
     <a href="{% url 'result' %}" class="dashboard-link">Click Here To See Result</a>
   </div>
+  <style>
+    .result-container {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .result-heading {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .result-value {
+        font-size: 36px;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="result-container">
+  <h2 class="result-heading">Total Number of Expected Voters:</h2>
+  <p class="result-value">{{ total_voters }}</p>
+  <h2 class="result-heading">Total Number of Registered Voters:</h2>
+  <p class="result-value">{{ registered_voters }}</p>
+</div>
+
+  
 {% endblock %}

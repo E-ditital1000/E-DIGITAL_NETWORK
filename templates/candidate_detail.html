@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="card">
-  <img src="{{ obj.image.url }}" style="width:100%" class="img-fluid">
+  <img src="{{ obj.image_link }}" style="width:100%" class="img-fluid">
   <div class="container">
     <h4><b>Name: {{ obj.name }}</b></h4>
     <p>Position: {{ obj.position }}</p>
@@ -12,4 +12,5 @@
     <p>County: {{ obj.county }}</p>
     <p>Party: {{ obj.party }}</p>
   </div>
-  {% endblock %}
+</div>
+{% endblock %}

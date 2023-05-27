@@ -28,11 +28,18 @@ class Candidate(models.Model):
     county = models.CharField(max_length=50, default='Unknown')
     party = models.CharField(max_length=50, default='Unknown')
     image = models.ImageField(verbose_name="Candidate Pic", upload_to='images/')
-    
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_image = Candidate.objects.get(pk=self.pk).image
+            if self.image != old_image:
+                old_image.delete(save=False)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return "{} - {}".format(self.name, self.position.title)
+    
 
-from django.db import models
 
 class ControlVote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
