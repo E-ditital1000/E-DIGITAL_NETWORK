@@ -57,8 +57,6 @@ def get_registered_voters_count():
 
 
 def dashboardView(request):
-    # Get the total number of expected voters (e.g., from a database query)
-    total_voters = 5000  # Replace with your actual logic to get the total number
     registered_voters_count = get_registered_voters_count()
     context = {'registered_voters_count': registered_voters_count}
     return render(request, 'dashboard.html', context)
