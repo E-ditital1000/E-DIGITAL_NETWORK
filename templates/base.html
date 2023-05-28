@@ -387,6 +387,30 @@ form button[type=submit] {
   color: white;
   text-align: center;
 }
+
+.toggle-button {
+  padding: 10px 15px;
+  background-color: #f5f5f5;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+  background-color: #ddd;
+}
+
+.dark-mode .toggle-button {
+  background-color: #333;
+  color: #f5f5f5;
+}
+
+.dark-mode .toggle-button:hover {
+  background-color: #555;
+}
+
   </style>
   
 </head>
@@ -395,12 +419,13 @@ form button[type=submit] {
   <div class="header">
     <a class="active" href="{% url 'home' %}">Editital Network online Voting System</a>
     <div class="header-right">
+      <button class="nav-item nav-link" id="toggleButton" onclick="toggleDarkMode()">Toggle Dark Mode</button>
       {% if request.user.is_authenticated %}
       <a class="nav-item nav-link" href="{% url 'dashboard' %}">Dashboard</a>
       <a class="nav-item nav-link" href="{% url 'editprofile' %}">Edit Profile</a>
       <a class="nav-item nav-link" href="{% url 'changepass' %}">Change Password</a>
       <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-     <button class="nav-item nav-link" id="toggleButton" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+     
       {% else %}
       <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
       <a class="nav-item nav-link" href="{% url 'registration' %}">Register</a>
