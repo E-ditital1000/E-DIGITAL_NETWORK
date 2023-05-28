@@ -25,7 +25,6 @@
 
 <body>
 
-  
   <div class="table-responsive">
     <div class="mb-3">
       <label for="positionFilter" class="form-label">Filter by Position:</label>
@@ -77,8 +76,10 @@
   
       candidateTable.draw();
     });
+  
+    // Initialize the position filter
+    $('#positionFilter').trigger('change');
   });
   </script>
   
-  </script>
 {% endblock %}
