@@ -82,20 +82,10 @@ $(document).ready(function() {
   $('#positionFilter').change(function() {
     var selectedPositions = $(this).val();
 
-    // Hide all rows initially
-    candidateTable.rows().nodes().to$().hide();
-
-    // Show rows matching the selected positions
-    candidateTable.rows(function(index, data, node) {
-      var position = $(node).data('position');
-      if (selectedPositions.length === 0 || selectedPositions.includes(position)) {
-        return true;
-      }
-      return false;
-    }).nodes().to$().show();
-
-    // Redraw the table
-    candidateTable.draw();
+    candidateTable
+      .columns(1)
+      .search(selectedPositions.join('|'), true, false)
+      .draw();
   });
 
   // Initialize the position filter
