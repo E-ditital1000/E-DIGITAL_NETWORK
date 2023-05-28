@@ -23,14 +23,6 @@
 
 </head>
 <div class="table-responsive">
-  <div class="mb-3">
-    <label for="positionFilter" class="form-label">Filter by Position:</label>
-    <select id="positionFilter" class="form-select" multiple>
-      {% for candidate in obj %}
-        <option value="{{ candidate.position }}">{{ candidate.position }}</option>
-      {% endfor %}
-    </select>
-  </div>
   <table id="candidateTable" class="table table-bordered table-sm text-center">
     <thead>
       <tr>
