@@ -24,7 +24,6 @@
 </head>
 
 <body>
-
   <div class="table-responsive">
     <div class="mb-3">
       <label for="positionFilter" class="form-label">Filter by Position:</label>
@@ -36,7 +35,26 @@
       </select>
     </div>
     <table id="candidateTable" class="table table-bordered table-sm text-center">
-      <!-- Table content -->
+      <thead>
+        <tr>
+          <th>Candidate Name</th>
+          <th>Candidate Position</th>
+          <th>Candidate District</th>
+          <th>Candidate County</th>
+          <th>Total Vote</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for candidate in obj %}
+          <tr>
+            <td>{{ candidate.name }}</td>
+            <td>{{ candidate.position }}</td>
+            <td>{{ candidate.district }}</td>
+            <td>{{ candidate.county }}</td>
+            <td>{{ candidate.total_vote }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
   </div>
   
