@@ -425,6 +425,20 @@ form button[type=submit] {
     heartIcon.addEventListener("click", updateQuote);
 
   </script>
+    <script>
+      $(document).ready(function() {
+        $('#candidateTable').DataTable({
+          responsive: true,
+          order: [[1, 'asc']], // Sort by position in ascending order
+        });
+  
+        // Handle sorting button click event
+        $('.sort-button').click(function() {
+          var column = $(this).data('column');
+          $('#candidateTable').DataTable().order([column, 'asc']).draw();
+        });
+      });
+    </script>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
     integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
     crossorigin="anonymous"></script>
