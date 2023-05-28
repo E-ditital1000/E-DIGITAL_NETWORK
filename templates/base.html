@@ -13,6 +13,18 @@ body, html {
 }
 
 body {
+  padding: 25px;
+  background-color: white;
+  color: black;
+  font-size: 25px;
+}
+
+.dark-mode {
+  background-color: black;
+  color: white;
+}
+
+body {
   background-image: url("/img/test.jpg");
   background-size: cover;
   background-position: center;
@@ -402,6 +414,11 @@ form button[type=submit] {
     <p>Footer</p>
   </div>
   <script>
+    
+    function myFunction() {
+  var element = document.body;
+  element.classList.toggle("dark-mode");
+}
     const quotes = [
       {
         text: "If you don't vote, you lose the right to complain.",
