@@ -3,7 +3,7 @@
 {% block title %}{% endblock %}
 
 {% block content %}
-  <h2 class="position-heading">Available Positions For Vote</h2>
+  <h2 class="position-heading">Available Electoral Candidates</h2>
   <ul class="position-list">
     {% for i in obj %}
       <li><a href="{% url 'candidate' i.id %}" class="position-link">{{ i.title }}</a></li>

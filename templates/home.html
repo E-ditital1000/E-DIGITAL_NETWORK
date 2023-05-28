@@ -38,19 +38,4 @@
     </div>
   </div>
 </div>
-
-<div class="voting-container">
-  <h1>Everything You Need to Vote</h1>
-  <div class="voting-actions">
-    <a href="{% url 'registration' %}" class="btn">Register to Vote</a>
-    <a href="#" class="btn">Check Voter Registration</a>
-    <a href="#" class="btn">Find Your Polling Place</a>
-    {% for candidate in candidates %}
-    <h3>{{ candidate.name }}</h3>
-    <p>Position: {{ candidate.position.title }}</p>
-    <p><a href="{% url 'learn_about_candidate' candidate.pk %}">Learn More</a></p>
-  {% endfor %}
-  </div>
-</div>
-
 {% endblock %}
