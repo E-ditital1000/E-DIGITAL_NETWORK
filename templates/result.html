@@ -26,7 +26,6 @@
   <div class="mb-3">
     <label for="positionFilter" class="form-label">Filter by Position:</label>
     <select id="positionFilter" class="form-select" multiple>
-      <option value="">All Positions</option> <!-- Add an option for all positions -->
       {% for candidate in obj %}
         <option value="{{ candidate.position }}">{{ candidate.position }}</option>
       {% endfor %}
@@ -65,33 +64,4 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
-<script>
-$(document).ready(function() {
-  var candidateTable = $('#candidateTable').DataTable({
-    responsive: true,
-    order: [[1, 'asc']], // Sort by position in ascending order
-  });
-
-  // Handle sorting button click event
-  $('.sort-button').click(function() {
-    var column = $(this).data('column');
-    candidateTable.order([column, 'asc']).draw();
-  });
-
-  // Handle position filter
-  $('#positionFilter').change(function() {
-    var selectedPositions = $(this).val();
-
-    candidateTable
-      .columns(1)
-      .search(selectedPositions.join('|'), true, false)
-      .draw();
-  });
-
-  // Initialize the position filter
-  $('#positionFilter').trigger('change');
-});
-</script>
-
-  
 {% endblock %}
