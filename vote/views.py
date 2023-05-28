@@ -56,10 +56,7 @@ def get_registered_voters_count():
     return Registration.objects.count()
 
 
-def dashboardView(request):
-    registered_voters_count = get_registered_voters_count()
-    context = {'registered_voters_count': registered_voters_count}
-    return render(request, 'dashboard.html', context)
+
 
 def loginView(request):
     if request.method == "POST":
