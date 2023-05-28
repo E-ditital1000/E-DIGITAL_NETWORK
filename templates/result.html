@@ -4,7 +4,7 @@
 
 {% block content %}
   <h2 class="text-center">Result</h2>
-  <table class="table table-bordered table-sm text-center">
+  <table id="candidateTable" class="table table-bordered table-sm text-center">
     <thead>
       <tr>
         <th>Candidate Name</th>
@@ -27,4 +27,21 @@
       {% endfor %}
     </tbody>
   </table>
+  <!-- Place the following scripts before the closing </body> tag -->
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#candidateTable').DataTable();
+  });
+</script>
+
 {% endblock %}
