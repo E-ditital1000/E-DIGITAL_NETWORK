@@ -69,30 +69,33 @@
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
   <script>
-  $(document).ready(function() {
-    var candidateTable = $('#candidateTable').DataTable({
-      responsive: true,
-      order: [[1, 'asc']], // Sort by position in ascending order
-    });
-  
-    // Handle sorting button click event
-    $('.sort-button').click(function() {
-      var column = $(this).data('column');
-      candidateTable.order([column, 'asc']).draw();
-    });
-  
-    // Handle position filter
-    $('#positionFilter').change(function() {
-      var selectedPositions = $(this).val();
-  
-      // Reset the table search
-      candidateTable.search('').draw();
-  
-      // Apply position filter
-      if (selectedPositions.length > 0) {
-        candidateTable.column(1).search(selectedPositions.join('|'), true, false).draw();
-      }
-    });
+ $(document).ready(function() {
+  var candidateTable = $('#candidateTable').DataTable({
+    responsive: true,
+    order: [[1, 'asc']], // Sort by position in ascending order
   });
+
+  // Handle sorting button click event
+  $('.sort-button').click(function() {
+    var column = $(this).data('column');
+    candidateTable.order([column, 'asc']).draw();
+  });
+
+  // Handle position filter
+  $('#positionFilter').change(function() {
+    var selectedPositions = $(this).val();
+
+    // Reset the table search
+    candidateTable.search('').draw();
+
+    // Apply position filter
+    if (selectedPositions.length > 0) {
+      candidateTable.column(1).search(selectedPositions.join('|'), true, false).draw();
+    } else {
+      candidateTable.column(1).search('').draw();
+    }
+  });
+});
+
   </script>
 {% endblock %}
