@@ -364,6 +364,16 @@ form button[type=submit] {
     .position-link:hover {
       background-color: #0056b3;
     }
+
+    .footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(35, 20, 167);
+  color: white;
+  text-align: center;
+}
   </style>
   
 </head>
@@ -387,6 +397,9 @@ form button[type=submit] {
   <div class="container">
     {% block content %}
     {% endblock %}
+  </div>
+  <div class="footer">
+    <p>Footer</p>
   </div>
   <script>
     const quotes = [
