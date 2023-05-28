@@ -30,72 +30,55 @@
     <div class="mb-3">
       <label for="positionFilter" class="form-label">Filter by Position:</label>
       <select id="positionFilter" class="form-select" multiple>
+        <option value="">All Positions</option> <!-- Add an option for all positions -->
         {% for candidate in obj %}
           <option value="{{ candidate.position }}">{{ candidate.position }}</option>
         {% endfor %}
       </select>
     </div>
     <table id="candidateTable" class="table table-bordered table-sm text-center">
-      <thead>
-        <tr>
-          <th>Candidate Name</th>
-          <th>Candidate Position <button class="sort-button" data-column="1">Sort</button></th>
-          <th>Candidate District</th>
-          <th>Candidate County</th>
-          <th>Total Vote</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for candidate in obj %}
-        <tr>
-          <td>{{ candidate.name }}</td>
-          <td>{{ candidate.position }}</td>
-          <td>{{ candidate.district }}</td>
-          <td>{{ candidate.county }}</td>
-          <td>{{ candidate.total_vote }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
+      <!-- Table content -->
     </table>
   </div>
-
+  
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+  
   <!-- DataTables -->
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-
+  
   <!-- Bootstrap JS -->
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
-
+  
   <script>
- $(document).ready(function() {
-  var candidateTable = $('#candidateTable').DataTable({
-    responsive: true,
-    order: [[1, 'asc']], // Sort by position in ascending order
+  $(document).ready(function() {
+    var candidateTable = $('#candidateTable').DataTable({
+      responsive: true,
+      order: [[1, 'asc']], // Sort by position in ascending order
+    });
+  
+    // Handle sorting button click event
+    $('.sort-button').click(function() {
+      var column = $(this).data('column');
+      candidateTable.order([column, 'asc']).draw();
+    });
+  
+    // Handle position filter
+    $('#positionFilter').change(function() {
+      var selectedPositions = $(this).val();
+  
+      // Reset the table search and filtering
+      candidateTable.search('').columns().search('').draw();
+  
+      // Apply position filter
+      if (selectedPositions.length > 0) {
+        candidateTable.column(1).search(selectedPositions.join('|'), true, false);
+      }
+  
+      candidateTable.draw();
+    });
   });
-
-  // Handle sorting button click event
-  $('.sort-button').click(function() {
-    var column = $(this).data('column');
-    candidateTable.order([column, 'asc']).draw();
-  });
-
-  // Handle position filter
-  $('#positionFilter').change(function() {
-    var selectedPositions = $(this).val();
-
-    // Reset the table search
-    candidateTable.search('').draw();
-
-    // Apply position filter
-    if (selectedPositions.length > 0) {
-      candidateTable.column(1).search(selectedPositions.join('|'), true, false).draw();
-    } else {
-      candidateTable.column(1).search('').draw();
-    }
-  });
-});
-
+  </script>
+  
   </script>
 {% endblock %}
