@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
 import os
-from .forms import CandidateForm
 
 
 
@@ -53,20 +52,7 @@ def registrationView(request):
     
     return render(request, "registration.html", {'form': form})
 
-def create_candidate(request):
-    if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
-        if form.is_valid():
-            candidate_key = form.cleaned_data['candidate_key']
-            if candidate_key == 'YOUR_SERVICE_PROVIDER_KEY':  # Replace with your actual key verification logic
-                candidate = form.save()
-                # Handle any additional logic or redirect to a success page
-                return redirect('candidate-detail', pk=candidate.pk)
-            else:
-                form.add_error('candidate_key', 'Invalid candidate key')
-    else:
-        form = CandidateForm()
-    return render(request, 'create_candidate.html', {'form': form})
+
 
 
 def dashboardView(request):
