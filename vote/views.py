@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
 import os
-from .models import Registration
+
 
 
 def homeView(request):
@@ -52,11 +52,22 @@ def registrationView(request):
     
     return render(request, "registration.html", {'form': form})
 
-def get_registered_voters_count():
-    return Registration.objects.count()
 
 
 
+def dashboardView(request):
+    # Get the total number of expected voters (e.g., from a database query)
+    total_voters = 5000  # Replace with your actual logic to get the total number
+
+    # Get the total number of registered voters (e.g., from a database query)
+    registered_voters = Profile.objects.count()  # Replace with your actual logic to count the registered voters
+
+    context = {
+        'total_voters': total_voters,
+        'registered_voters': registered_voters
+    }
+
+    return render(request, 'dashboard.html', context)
 
 def loginView(request):
     if request.method == "POST":
