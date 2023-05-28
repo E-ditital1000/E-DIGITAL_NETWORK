@@ -13,6 +13,19 @@
     <p class="card-text">Party: {{ obj.party }}</p>
   </div>
 </div>
-
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.name.label }}: {{ form.name }}<br>
+  {{ form.position.label }}: {{ form.position }}<br>
+  {{ form.district.label }}: {{ form.district }}<br>
+  {{ form.county.label }}: {{ form.county }}<br>
+  {{ form.party.label }}: {{ form.party }}<br>
+  {{ form.image.label }}: {{ form.image }}<br>
+  Candidate Key: {{ form.candidate_key }}<br>
+  {% if form.candidate_key.errors %}
+    <p class="error">{{ form.candidate_key.errors }}</p>
+  {% endif %}
+  <input type="submit" value="Save">
+</form>
 
   {% endblock %}
