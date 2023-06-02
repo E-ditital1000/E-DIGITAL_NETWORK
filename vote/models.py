@@ -40,12 +40,7 @@ class Candidate(models.Model):
     def __str__(self):
         return "{} - {}".format(self.name, self.position.title)
     
-class NationalID(models.Model):
-    id_number = models.CharField(max_length=10, unique=True)
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return self.id_number
 
 class ControlVote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
