@@ -9,6 +9,7 @@ from .models import Candidate, Position, ControlVote
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
+from .models import NationalID
 import os
 
 
