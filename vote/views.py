@@ -9,7 +9,6 @@ from .models import Candidate, Position, ControlVote
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Profile
-import os
 
 
 
@@ -33,7 +32,7 @@ def registrationView(request):
                 end_id = 2000
                 entered_id = int(national_id.replace('ID', ''))
                 if not (start_id <= entered_id <= end_id):
-                    return render(request, "registration.html", {'form': form, 'note': 'Invalid ID. Please enter a valid ID within the specified range.'})
+                    return render(request, "registration.html", {'form': form, 'note': 'Invalid ID. Please enter a valid ID'})
 
                 user = form.save(commit=False)
                 user.set_password(cd['password'])
@@ -53,8 +52,6 @@ def registrationView(request):
     return render(request, "registration.html", {'form': form})
 
 
-
-
 def dashboardView(request):
     # Get the total number of expected voters (e.g., from a database query)
     total_voters = 5000  # Replace with your actual logic to get the total number
@@ -68,6 +65,8 @@ def dashboardView(request):
     }
 
     return render(request, 'dashboard.html', context)
+
+
 
 def loginView(request):
     if request.method == "POST":

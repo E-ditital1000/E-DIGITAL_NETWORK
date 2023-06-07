@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 # Create your models here.
 
 class Position(models.Model):

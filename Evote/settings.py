@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-%5pjt-7je2m7qf8g7&-ssjqa!1ih+160(8^fw5w!0tgb!8a5nl
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['votecaster.vercel.app', '.now.sh', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['votecaster.vercel.app','.now.sh', '127.0.0.1', 'localhost']
 
 #
 # Application definition
@@ -76,6 +76,12 @@ WSGI_APPLICATION = 'Evote.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 DATABASES = {
     'default': {
