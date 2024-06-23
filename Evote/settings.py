@@ -37,7 +37,6 @@ ALLOWED_HOSTS = ['e-digital-network.onrender.com','.now.sh', '127.0.0.1', 'local
 
 #
 # Application definition
-
 INSTALLED_APPS = [
     'widget_tweaks',
     'dal',
@@ -48,20 +47,17 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary',
-    'cloudinary_storage',
+    'whitenoise.runserver_nostatic',  # Correctly add the comma here
     'django.contrib.staticfiles',
     'vote',
     'crispy_forms',
     'crispy_bootstrap5',
-    
-    
+    'cloudinary',
+    'cloudinary_storage',
 ]
-
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
 
 # Cloudinary Configuration
 cloudinary.config(
@@ -70,30 +66,33 @@ cloudinary.config(
     api_secret='5fb1dAK6SU2veve8exLK7TVLXFA',
 )
 
-
 # Cloudinary Storage Configuration
 CLOUDINARY_STORAGE  = {
     'CLOUD_NAME': 'dkhobecps',
     'API_KEY': '657146181452448',
     'API_SECRET': '5fb1dAK6SU2veve8exLK7TVLXFA',
 }
-# Set Cloudinary as the default stordkhobecpsage backend
+
+# Set Cloudinary as the default storage backend
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-STATIC_URL = 'https://res.cloudinary.com/dkhobecps/'
-
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # Locale middleware for language preferences
+    'django.middleware.gzip.GZipMiddleware',  # GZip middleware for compressing responses
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'Evote.urls'
 
