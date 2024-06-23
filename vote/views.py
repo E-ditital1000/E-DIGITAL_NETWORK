@@ -167,7 +167,7 @@ def createElectionView(request):
             # Create a voter ID for the commissioner (if this is required logic)
             voter_id = Voter().create_for_commissioner(election)
 
-            messages.success(request, "Election created successfully.")
+            messages.success(request, "Election created successfully. Please Check your Email!")
 
             # Prepare email context
             context = {
