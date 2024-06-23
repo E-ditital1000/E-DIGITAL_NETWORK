@@ -16,14 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from dal import autocomplete
 from vote import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homeView, name='home'),
-    path('register/', views.registrationView, name='registration'),
+    path('register/', views.registrationView, name='register'),
     path('login/', views.loginView, name='login'),
     path('dashboard/', views.dashboardView, name='dashboard'),
     path('logout/', views.logoutView, name='logout'),
@@ -33,7 +35,20 @@ urlpatterns = [
     path('result/', views.resultView, name='result'),
     path('changepass/', views.changePasswordView, name='changepass'),
     path('editprofile/', views.editProfileView, name='editprofile'),
+    path('create-election/', views.createElectionView, name='create_election'),
+    path('register-voter/<int:election_id>/', views.registerVoterView, name='register_voter'),
+    path('election/<int:election_id>/', views.electionDetailView, name='election_detail'),
+    path('election/<int:election_id>/create-candidate/', views.createCandidateView, name='create_candidate'),
+    path('create-control-vote/<int:election_id>/', views.createControlVoteView, name='create_control_vote'),
+    path('vote-candidate/<int:candidate_id>/', views.voteCandidateView, name='vote_candidate'),  # Add this line
+    path('validate_voter/', views.validateVoterId, name='validate_voter'),
+    path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('user-autocomplete/', autocomplete.Select2ListView.as_view(), name='user-autocomplete'),
+    
 ]
+
+
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.MEDIA_ROOT)

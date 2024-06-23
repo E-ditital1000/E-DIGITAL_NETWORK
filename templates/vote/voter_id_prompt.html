@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Enter Voter ID{% endblock %}
+{% block content %}
+<main class="main">
+    <section class="section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title text-center">Enter Your Voter ID</h2>
+                            {% if messages %}
+                            {% for message in messages %}
+                              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                                {{ message }}
+                              </div>
+                            {% endfor %}
+                          {% endif %}
+                          
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="voter_id">Voter ID:</label>
+                                    <input type="text" class="form-control" id="voter_id" name="voter_id" required>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

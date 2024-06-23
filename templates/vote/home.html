@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Online Voting System{% endblock %}
+
+{% block content %}
+<style>
+  .header-bg {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-style:inherit;
+    transform-style: preserve-3d;
+  }
+  .ballot-box {
+    width: 100px;
+    height: auto;
+  }
+</style>
+<header class="header-bg text-center py-5" > <!--style="background-image: url({% static 'assets/img/banner.png' %});"-->
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8 text-md-start">
+        <h1 class="display-4 text-primary">Welcome to ElectEase</h1>
+        <p class="lead text-primary">Your go-to platform for secure and efficient online voting in educational institutions.</p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <img src="{% static 'assets/img/ballot.png' %}" alt="Ballot Box Infographic" class="ballot-box">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="jumbotron" style="display: absolute; text-align: center;">
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  {% endif %}
+<section class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <blockquote class="blockquote p-4 bg-light shadow rounded">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fa fa-3x fa-quote-right me-3"></i>
+          <p class="mb-0 fs-5" id="quoteText">If you don't vote, you lose the right to complain.</p>
+        </div>
+        <footer class="blockquote-footer d-flex justify-content-between align-items-center">
+          <cite id="quoteAuthor">George Carlin</cite>
+          <div>
+            <span class="badge bg-danger" id="quoteLikes">42</span>
+            <i class="fa fa-heart text-danger"></i>
+          </div>
+        </footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<script>
+  const quotes = [
+    {
+      text: "If you don't vote, you lose the right to complain.",
+      author: "George Carlin",
+      likes: 42,
+    },
+    {
+      text: "The ballot is stronger than the bullet.",
+      author: "Abraham Lincoln",
+      likes: 87,
+    },
+    {
+      text: "Voting is the expression of our commitment to ourselves, one another, this country, and this world.",
+      author: "Sharon Salzberg",
+      likes: 63,
+    },
+    {
+      text: "Voting is the cornerstone of democracy.",
+      author: "Abraham Bedell",
+      likes: 28,
+    },
+    {
+      text: "Your vote, your voice, your power.",
+      author: "Joanna B. Roberts",
+      likes: 42,
+    },
+    {
+      text: "The vote is precious. It is almost sacred. It is the most powerful non-violent tool we have in a democratic society.",
+      author: "John Lewis",
+      likes: 75,
+    },
+    {
+      text: "Elections belong to the people. It's their decision.",
+      author: "Abraham Lincoln",
+      likes: 58,
+    },
+    {
+      text: "A man without a vote is a man without protection.",
+      author: "Lyndon B. Johnson",
+      likes: 49,
+    },
+    {
+      text: "Bad officials are elected by good citizens who do not vote.",
+      author: "George Jean Nathan",
+      likes: 66,
+    },
+    {
+      text: "The ignorance of one voter in a democracy impairs the security of all.",
+      author: "John F. Kennedy",
+      likes: 74,
+    },
+    {
+      text: "Voting is the foundational act that breathes life into the principle of the consent of the governed.",
+      author: "DeForest Soaries",
+      likes: 34,
+    },
+    {
+      text: "The right to vote is the right upon which all other rights depend.",
+      author: "Thomas Paine",
+      likes: 57,
+    },
+    {
+      text: "Our lives begin to end the day we become silent about things that matter.",
+      author: "Martin Luther King Jr.",
+      likes: 88,
+    },
+    // Add more quotes here
+  ];
+
+  function getRandomQuote() {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    return quotes[randomIndex];
+  }
+
+  function updateQuote() {
+    const quote = getRandomQuote();
+    document.getElementById("quoteText").textContent = quote.text;
+    document.getElementById("quoteAuthor").textContent = quote.author;
+    document.getElementById("quoteLikes").textContent = quote.likes;
+  }
+
+  function updateQuote2() {
+    const quote = getRandomQuote();
+    document.getElementById("quoteText2").textContent = quote.text;
+    document.getElementById("quoteAuthor2").textContent = quote.author;
+    document.getElementById("quoteLikes2").textContent = quote.likes;
+  }
+
+  // Update the quotes initially
+  updateQuote();
+  updateQuote2();
+
+  // Add an event listener to update the quotes when the heart icons are clicked
+  const heartIcon1 = document.querySelectorAll(".fa-heart")[0];
+  heartIcon1.addEventListener("click", updateQuote);
+
+  const heartIcon2 = document.querySelectorAll(".fa-heart")[1];
+  heartIcon2.addEventListener("click", updateQuote2);
+</script>
+
+
+
+<!-- Faq Section -->
+<section id="faq" class="faq section py-5">
+  <!-- Section Title -->
+  <div class="container section-title text-center" data-aos="fade-up">
+    <h2>Frequently Asked Questions</h2>
+    <p>Find answers to common questions about ElectEase, your trusted online voting system for educational institutions.</p>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10" data-aos="fade-up" data-aos-delay="100">
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingOne">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                What is ElectEase?
+              </button>
+            </h3>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                ElectEase is an online voting system designed to simplify and secure the election process for educational institutions. Our platform allows students, faculty, and staff to vote easily from any device with internet access, ensuring a smooth and efficient voting experience.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                How does ElectEase ensure the security of the votes?
+              </button>
+            </h3>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                ElectEase employs advanced encryption and security protocols to protect the integrity of the voting process. Each vote is securely transmitted and stored, ensuring that all data is confidential and tamper-proof. Additionally, we use multi-factor authentication to verify voter identities.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Who can use ElectEase?
+              </button>
+            </h3>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                ElectEase is designed for use by colleges, universities, and other educational institutions. It can be used for student government elections, faculty votes, and any other institutional voting needs.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingFour">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                How do I sign up for ElectEase?
+              </button>
+            </h3>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                To sign up for ElectEase, visit our website and click on the "Get Started" button. You will be guided through the registration process, where you can create an account and set up your institution's voting event.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingFive">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                Can I customize the voting process with ElectEase?
+              </button>
+            </h3>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes, ElectEase offers customizable features to tailor the voting process to your institution's needs. You can create specific voting categories, add candidate profiles, set voting deadlines, and more.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingSix">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                What if I encounter issues while using ElectEase?
+              </button>
+            </h3>
+            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                If you experience any issues, our dedicated support team is here to help. You can contact us through our support page, email, or phone, and we will assist you promptly.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingSeven">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                How do I know my vote has been counted?
+              </button>
+            </h3>
+            <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                After casting your vote, ElectEase provides a confirmation receipt to assure you that your vote has been successfully recorded. You can also track the status of the voting event in real-time through our platform.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingEight">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                Is there a cost to use ElectEase?
+              </button>
+            </h3>
+            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                ElectEase offers various pricing plans to accommodate different institutional needs and budgets. For detailed pricing information, please visit our pricing page or contact our sales team.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingNine">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                How can I promote the use of ElectEase within my institution?
+              </button>
+            </h3>
+            <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                ElectEase provides promotional materials and resources to help you encourage participation in your institution. We offer guides, templates, and support to ensure that your community is informed and engaged in the voting process.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingTen">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                What makes ElectEase different from other online voting systems?
+              </button>
+            </h3>
+            <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                ElectEase stands out due to its user-friendly interface, robust security features, and comprehensive support. Our platform is designed specifically for educational institutions, ensuring that it meets the unique needs of your community while providing a reliable and efficient voting experience.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- End Faq Column-->
+    </div>
+  </div>
+</section><!-- /Faq Section -->
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

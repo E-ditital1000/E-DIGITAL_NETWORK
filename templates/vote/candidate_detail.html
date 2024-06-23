@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Candidate Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for obj in candidates %}
+    <div class="box">
+        <div class="image">
+            <img src="{{ obj.image.url }}" alt="Candidate Image">
+        </div>
+        <div class="name_job">{{ obj.name }}</div>
+        <div class="rating">
+            <!-- Example static rating, you might want to make this dynamic based on actual data -->
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+            <i class="far fa-star"></i>
+        </div>
+        <p>{{ obj.position }} - {{ obj.district }}, {{ obj.county }}</p>
+        <p>Party: {{ obj.party }}</p>
+        <div class="btns">
+            <button>Read More</button>
+            <button>Subscribe</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

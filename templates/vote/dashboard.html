@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<main class="main">
+  <!-- Hero Section -->
+  <section id="hero" class="hero section">
+    <img src="{% static 'assets/img/hero-bg-abstract.jpg' %}" alt="" data-aos="fade-in" class="">
+    <div class="container">
+      <div class="row justify-content-center" data-aos="zoom-out">
+        <div class="col-xl-7 col-lg-9 text-center">
+          <h1>Welcome to ElectEase</h1>
+          <p>Your go-to platform for secure and efficient online voting in educational institutions.</p>
+        </div>
+      </div>
+      <div class="text-center" data-aos="zoom-out" data-aos-delay="100">
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'result' %}" class="btn-get-started">
+          <i class="bi bi-ballot"></i> Vote
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn-get-started">Get Started</a>
+        {% endif %}
+      </div>
+      <br><br>
+      {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    
+      <!-- Ensure this DIV is a new ROW for your icon boxes -->
+      <div class="row">
+        <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="100">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-gear-wide-connected"></i></div>
+            <h4 class="title"><a href="">Easy Setup</a></h4>
+            <p class="description">Set up your institution's voting event with ease and start voting in no time.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="200">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-shield-lock-fill"></i></div>
+            <h4 class="title"><a href="">Secure Voting</a></h4>
+            <p class="description">Our advanced security protocols ensure the integrity and confidentiality of your votes.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="300">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-graph-up"></i></div>
+            <h4 class="title"><a href="">Real-time Results</a></h4>
+            <p class="description">View live voting results with our dynamic charts and statistics.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="400">
+          <div class="icon-box">
+            <div class="icon"><i class="bi bi-ui-checks"></i></div>
+            <h4 class="title"><a href="">User-Friendly</a></h4>
+            <p class="description">An intuitive interface designed for easy navigation and seamless voting experience.</p>
+          </div>
+        </div>
+      </div> <!-- End of Row for icon boxes -->
+    </div>
+  </section><!-- /Hero Section -->
+
+<!-- Elections Section -->
+<section id="elections" class="elections section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-7 col-lg-9 text-center">
+        <h2>Created Elections</h2>
+        <p>Here are the elections you have created:</p>
+      </div>
+    </div>
+    <div class="row">
+      {% for election in elections %}
+      <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-out" data-aos-delay="{{ forloop.counter0|add:100 }}">
+        <div class="icon-box">
+          <div class="icon"><i class="bi bi-calendar-event"></i></div>
+          <h4 class="title"><a href="{% url 'election_detail' election.id %}">{{ election.name }}</a></h4>
+          <p class="description">
+            <strong>Start Time:</strong> {{ election.start_time|date:"M d, Y H:i" }}<br>
+            <strong>End Time:</strong> {{ election.end_time|date:"M d, Y H:i" }}<br>
+            <strong>Max Voters:</strong> {{ election.max_voters }}
+          </p>
+          <a href="{% url 'election_detail' election.id %}" class="btn btn-primary mt-2">View Details</a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center">
+        <p>No elections have been created yet.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+</main>
+{% endblock %}

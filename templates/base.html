@@ -1,576 +1,174 @@
-{% load static %}
-<!doctype html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-  <title>{% block title %}{% endblock %}</title>
-  <style>
-    body,
-    html {
-      height: 100%;
-    }
-
-    body {
-      padding: 0;
-      background-color: white;
-      color: black;
-      font-size: 0;
-    }
-
-    .dark-mode {
-      background-color: black;
-      color: white;
-    }
-
-    body {
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-
-
-    h1 {
-      text-align: center;
-      margin-top: 30px;
-      color: #333;
-    }
-
-    form {
-      max-width: 90%;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      color: #333;
-      font-size: 14px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
-
-    input[type="submit"] {
-      background-color: #1877f2;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-      background-color: #3b5998;
-    }
-
-    .checkbox-container {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .checkbox-container input[type="checkbox"] {
-      margin-right: 10px;
-    }
-
-    .terms-text {
-      font-size: 12px;
-      color: #333;
-    }
-
-    .terms-text a {
-      color: #1877f2;
-      text-decoration: none;
-    }
-
-    h2 {
-      text-align: center;
-    }
-
-    form button[type=submit] {
-      width: 100%;
-      background-color: #18009efb;
-      color: rgb(255, 255, 255);
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      font-size: 20px;
-      letter-spacing: 4px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .blockquote {
-      font-family: 'Droid Sans', sans-serif;
-      border-left: none;
-    }
-
-    .inner-block {
-      margin: 10% auto;
-      overflow: hidden;
-      border-radius: 17px;
-      background-color: #140691;
-      padding: 20px;
-      color: white;
-      width: 90%;
-      box-shadow: 0px 5px 20px 5px rgba(0, 0, 0, 0.75);
-    }
-
-    .block-text {
-      font-size: 16px;
-      margin-top: 13px;
-    }
-
-    @media only screen and (min-width: 768px) {
-      form {
-        max-width: 100%;
-      }
-
-      .inner-block {
-        margin: 10% auto;
-        width: 400px;
-      }
-    }
-
-
-
-    .header {
-      background-image: url("/static/img/test.jpg");
-      overflow: hidden;
-      background-color: #f1f1f1;
-      padding: 20px 10px;
-    }
-
-    .header a {
-      float: left;
-      color: black;
-      text-align: center;
-      padding: 12px;
-      text-decoration: none;
-      font-size: 18px;
-      line-height: 25px;
-      border-radius: 4px;
-    }
-
-    .header a.logo {
-      font-size: 25px;
-      font-weight: bold;
-    }
-
-    .header a:hover {
-      background-color: #ddd;
-      color: black;
-    }
-
-    .header a.active {
-      background-color: dodgerblue;
-      color: white;
-    }
-
-    .header-right {
-      float: right;
-    }
-
-    @media screen and (max-width: 500px) {
-      .header a {
-        float: none;
-        display: block;
-        text-align: left;
-      }
-
-      .header-right {
-        float: none;
-      }
-    }
-
-
-    /* Add any custom styling for the pop-up here */
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 20px;
-      background-color: #f8f8f8;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      z-index: 9999;
-    }
-
-    /* Add any custom styling for the table here */
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    th,
-    td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-
-    table {
-      font-family: Arial, Helvetica, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    table td,
-    table th {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-
-    table tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-
-    table tr:hover {
-      background-color: #ddd;
-    }
-
-    table th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: rgb(9, 21, 185);
-      color: white;
-    }
-
-    .card {
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-      transition: 0.3s;
-      border-radius: 5px;
-      width: 100%;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .card:hover {
-      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    }
-
-    .container {
-      padding: 16px;
-      text-align: center;
-    }
-
-    .card-title {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .card-text {
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .card-img-top {
-      width: 100%;
-      height: auto;
-      border-radius: 5px 5px 0 0;
-    }
-
-    /* Add rounded corners to the top left and the top right corner of the image */
-    img {
-      border-radius: 5px 5px 0 0;
-    }
-
-    .voting-container {
-      text-align: center;
-    }
-
-    .voting-container h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .voting-actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    .btn:hover {
-      background-color: #0056b3;
-    }
-
-    .dashboard-heading {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .dashboard-links {
-      text-align: center;
-    }
-
-    .dashboard-link {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      text-decoration: none;
-      margin: 10px;
-    }
-
-    .dashboard-link:hover {
-      background-color: #0056b3;
-    }
-
-    .position-heading {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-
-    }
-
-    .position-list {
-      list-style-type: none;
-      padding: 0;
-      text-align: center;
-    }
-
-    .position-list li {
-      margin-bottom: 10px;
-    }
-
-    .position-link {
-      display: inline-block;
-      padding: 5px 10px;
-      background-color: #007bff;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .position-link:hover {
-      background-color: #0056b3;
-    }
-
-    .footer {
-      background-color: #f5f5f5;
-      padding: 20px 0;
-      color: #333;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-   
-
-    .footer-links ul,
-    .footer-social ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-    }
-
-    .footer-links ul li,
-    .footer-social ul li {
-      margin-right: 15px;
-    }
-
-    .footer-links ul li a,
-    .footer-social ul li a {
-      color: #333;
-      text-decoration: none;
-    }
-
-    .footer-bottom {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .footer-bottom p {
-      font-size: 14px;
-    }
-
-
-    .toggle-button {
-      padding: 10px 15px;
-      background-color: #f5f5f5;
-      color: #333;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .toggle-button:hover {
-      background-color: #ddd;
-    }
-
-    .dark-mode .toggle-button {
-      background-color: #333;
-      color: #f5f5f5;
-    }
-
-    .dark-mode .toggle-button:hover {
-      background-color: #555;
-    }
-  </style>
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
-<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-</head>
-
-<body>
-  <div class="header">
-    <a class="active" href="{% url 'home' %}" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-style: italic;font-size: xx-large;">Edigital Network</a>
-    <div class="header-right">
-      <button class="nav-item nav-link toggle-button" id="toggleButton" onclick="toggleDarkMode()">Mode</button>
-
-      {% if request.user.is_authenticated %}
-      <a class="nav-item nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-      <a class="nav-item nav-link" href="{% url 'editprofile' %}">Edit Profile</a>
-      <a class="nav-item nav-link" href="{% url 'changepass' %}">Change Password</a>
-      <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-
-      {% else %}
-      <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-      <a class="nav-item nav-link" href="{% url 'registration' %}">Register</a>
-      {% endif %}
+{% load static %}  <!-- Ensure static files are loaded -->
+<HTml:5>
+
+<HEad>
+  {% load static %}
+
+<!-- Favicons -->
+<link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+<link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Vendor CSS Files -->
+<link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+<!-- Main CSS File -->
+<link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+<link href="{% static 'autocomplete_light/select2.css' %}" rel="stylesheet">
+    <script src="{% static 'autocomplete_light/jquery.js' %}"></script>
+    <script src="{% static 'autocomplete_light/select2.js' %}"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    {{ form.media }}
+</HEad>
+<body class="index-page">
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+        <!-- Logo Section -->
+        <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto">
+            <!-- Uncomment below if you use an image logo -->
+            <!-- <img src="{% static 'assets/img/logo.png' %}" alt="Logo"> -->
+            <h1 class="sitename" ><bold>ElectEase</bold></h1>
+        </a>
+        <h2 class="dashboard-heading"> {{ user.username }}</h2>
+        <!-- Navigation Menu -->
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}" class="active">DASHBOARD</a></li>
+                    {% if request.user.profile.role == 'commissioner' %}
+                        <li><a href="{% url 'create_election' %}">Create Election</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'changepass' %}">Change Password</a></li>
+                    <li><a href="{% url 'editprofile' %}">Edit Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+            
+        
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        {% if request.user.is_authenticated %}
+            <a class="btn-getstarted" href="{% url 'result' %}">View Result</a>
+        {% else %}
+            <a class="btn-getstarted" href="{% url 'login' %}">Get Started</a>
+        {% endif %}
     </div>
-  </div>
-  <br>
-  <div class="container">
+</header>
+
+ 
+ 
     {% block content %}
     {% endblock %}
-  </div>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2023 E-digitalNetwork. All rights reserved.</p>
+    
+ 
+    <footer id="footer" class="footer">
+      <div class="container footer-top">
+        <div class="row gy-4">
+          <!-- About Section -->
+          <div class="col-lg-5 col-md-12 footer-about">
+            <a href="index.html" class="logo d-flex align-items-center">
+              <span class="sitename">ElectEase</span>
+            </a>
+            <p>At ElectEase, we are dedicated to revolutionizing the voting experience for educational institutions by providing a secure, efficient, and user-friendly online platform. We aim to empower students, faculty, and staff to participate in elections seamlessly, ensuring that every voice is heard and every vote counts. Our mission is to enhance democratic engagement through innovative technology, fostering a culture of transparency, accessibility, and ease in the electoral process.</p>
+            <div class="social-links d-flex mt-4">
+              <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+              <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+              <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+    
+          <!-- Useful Links -->
+          <div class="col-lg-2 col-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">About us</a></li>
+              <li><a href="#">Services</a></li>
+              <li><a href="{% url 'terms_of_service' %}">Terms of service</a></li>
+              <li><a href="{% url 'privacy_policy' %}">Privacy policy</a></li>
+            </ul>
+          </div>
+    
+          <!-- Our Services -->
+<div class="col-lg-2 col-6 footer-links">
+  <h4>Our Services</h4>
+  <ul>
+    <li><a href="#">Election Management</a></li>
+    <li><a href="#">Voter Registration</a></li>
+    <li><a href="#">Real-Time Voting Results</a></li>
+    <li><a href="#">Security and Fraud Prevention</a></li>
+    <li><a href="#">Custom Election Setup</a></li>
+  </ul>
+</div>
+
+    
+          <!-- Contact Us -->
+          <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+            <h4>Contact Us</h4>
+            <p>Gardnerville</p>
+            <p>Monrovia</p>
+            <p>Liberia</p>
+            <p><strong>Phone:</strong> +231 77 8187 295</p>
+            <p><strong>Email:</strong> edigitalnetwork842@gmail.com</p>
+          </div>
+        </div>
       </div>
+    
+      <!-- Copyright -->
+     <!-- Copyright and Credits -->
+  <div class="container copyright text-center mt-4">
+    <p>© Copyright <strong class="px-1 sitename">ElectEase</strong> All Rights Reserved.</p>
+    <div class="credits">
+      Designed and Developed by <a href="https://www.edigitalnetwork.tech">E-Digital Network</a>
     </div>
-  </footer>
+  </div>
+      </div>
+    </footer>
+    
 
-  <script>
+    
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    function toggleDarkMode() {
-      var element = document.body;
-      element.classList.toggle("dark-mode");
-    }
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    const quotes = [
-      {
-        text: "If you don't vote, you lose the right to complain.",
-        author: "George Carlin",
-        likes: 42,
-      },
-      {
-        text: "The ballot is stronger than the bullet.",
-        author: "Abraham Lincoln",
-        likes: 87,
-      },
-      {
-        text: "Voting is the expression of our commitment to ourselves, one another, this country, and this world.",
-        author: "Sharon Salzberg",
-        likes: 63,
-      },
-      {
-        text: "Voting is the cornerstone of democracy.",
-        author: "Abraham Bedell",
-        likes: 28,
-      },
-      {
-        text: "Your vote, your voice, your power.",
-        author: "Joanna B. Roberts",
-        likes: 42,
-      },
-      // Add more quotes here
-    ];
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Vendor JS Files -->
+<script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+<script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+<script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
 
-    function getRandomQuote() {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      return quotes[randomIndex];
-    }
+<!-- Main JS File -->
+<script src="{% static 'assets/js/main.js' %}"></script>
 
-    function updateQuote() {
-      const quote = getRandomQuote();
-      document.getElementById("quoteText").textContent = quote.text;
-      document.getElementById("quoteAuthor").textContent = quote.author;
-      document.getElementById("quoteLikes").textContent = quote.likes;
-    }
-
-    // Update the quote initially
-    updateQuote();
-
-    // Add an event listener to update the quote when the heart icon is clicked
-    const heartIcon = document.querySelector(".fa-heart");
-    heartIcon.addEventListener("click", updateQuote);
-
-  </script>
-  <script>
-    $(document).ready(function () {
-      $('#candidateTable').DataTable({
-        responsive: true,
-        order: [[1, 'asc']], // Sort by position in ascending order
-      });
-
-      // Handle sorting button click event
-      $('.sort-button').click(function () {
-        var column = $(this).data('column');
-        $('#candidateTable').DataTable().order([column, 'asc']).draw();
-      });
-    });
-  </script>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/css/bootstrap.min.css">
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.7.0/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
 </body>
 
 </html>

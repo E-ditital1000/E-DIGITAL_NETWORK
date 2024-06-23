@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Election Results{% endblock %}
+{% block content %}
+<main class="main">
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="card-title text-center">Election Results</h2>
+              {% for result in election_results %}
+              <div class="card mb-3">
+                <div class="card-body">
+                  <h3 class="card-title">{{ result.election.name }}</h3>
+                  <p><strong>Commissioner:</strong> {{ result.election.commissioner.username }}</p>
+                  <p><strong>Start Time:</strong> {{ result.election.start_time }}</p>
+                  <p><strong>End Time:</strong> {{ result.election.end_time }}</p>
+                  <h4 class="mt-3">Candidates</h4>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Candidate</th>
+                        <th>Position</th>
+                        <th>Party</th>
+                        <th>Total Votes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for candidate in result.candidates %}
+                      <tr>
+                        <td>{{ candidate.name }}</td>
+                        <td>{{ candidate.position.title }}</td>
+                        <td>{{ candidate.party }}</td>
+                        <td>{{ candidate.total_vote }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

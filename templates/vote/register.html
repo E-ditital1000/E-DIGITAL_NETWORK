@@ -1,0 +1,60 @@
+={% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Registration</h2>
+  
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  
+  <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+    {% csrf_token %}
+    {{ form|crispy }}
+  
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  (function () {
+    'use strict';
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function toggle_voter_id() {
+    var role = $('#id_role').val();
+    if (role === 'commissioner') {
+        $('#div_id_voter_id').hide();
+    } else {
+        $('#div_id_voter_id').show();
+    }
+}
+
+$(document).ready(function() {
+    $('#id_role').change(toggle_voter_id);
+    toggle_voter_id();
+});
+</script>
+
+{% endblock %}

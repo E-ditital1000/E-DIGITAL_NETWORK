@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="jumbotron p-4">
+
+    <h2 class="mb-4">User Login</h2>
+    {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+    <form action="." method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="id_username" class="form-label">Username:</label>
+        <input type="text" name="username" class="form-control" id="id_username" required>
+      </div>
+      <div class="mb-3">
+        <label for="id_password" class="form-label">Password:</label>
+        <input type="password" name="password" class="form-control" id="id_password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
