@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%5pjt-7je2m7qf8g7&-ssjqa!1ih+160(8^fw5w!0tgb!8a5nl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
-ALLOWED_HOSTS = ['votecaster.vercel.app','.now.sh', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['electase.onrender.com','.now.sh', '127.0.0.1', 'localhost']
 
 #
 # Application definition
