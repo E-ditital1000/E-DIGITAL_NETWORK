@@ -12,9 +12,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-import os
 import environ
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import os
+from pathlib import Path 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -48,12 +52,37 @@ INSTALLED_APPS = [
     'vote',
     'crispy_forms',
     'crispy_bootstrap5',
+    'cloudinary',
+    'cloudinary_storage',
     
 ]
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+# Cloudinary Configuration
+cloudinary.config(
+    cloud_name='dkhobecps',
+    api_key='657146181452448',
+    api_secret='5fb1dAK6SU2veve8exLK7TVLXFA',
+)
+
+
+# Cloudinary Storage Configuration
+CLOUDINARY_STORAGE  = {
+    'CLOUD_NAME': 'dkhobecps',
+    'API_KEY': '657146181452448',
+    'API_SECRET': '5fb1dAK6SU2veve8exLK7TVLXFA',
+}
+# Set Cloudinary as the default stordkhobecpsage backend
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+STATIC_URL = 'https://res.cloudinary.com/dkhobecps/'
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -202,7 +231,9 @@ LOGIN_URL = '/login/'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # For development: where Django finds static files
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production: where 'collectstatic' collects files to
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
