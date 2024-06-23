@@ -1,17 +1,54 @@
-asgiref==3.6.0
-cloudinary==1.33.0
-dj-database-url==2.0.0
-Django==4.2.1
-django-widget-tweaks==1.5.0
+amqp==5.2.0
+argon2-cffi==21.3.0
+argon2-cffi-bindings==21.2.0
+asgiref==3.7.2  # Keeping the higher version
+billiard==4.2.0
+celery==5.4.0
+certifi==2023.5.7
+cffi==1.15.1
+charset-normalizer==3.1.0
+click==8.1.7
+click-didyoumean==0.3.1
+click-plugins==1.1.1
+click-repl==0.3.0
+cloudinary==1.33.0  # Included from the new list
+colorama==0.4.6
+contourpy==1.2.1
+crispy-bootstrap5==2024.2
+cycler==0.12.1
+Django==5.0.6  # Keeping the higher version
+django-autocomplete-light==3.11.0
 django-cloudinary-storage==0.3.0
 django-crispy-forms==2.1
 django-environ==0.11.2
 django-querysetsequence==0.17
+django-widget-tweaks==1.5.0
 fonttools==4.51.0
 gunicorn==20.1.0
-Pillow==8.3.2
-psycopg2-binary==2.9.1
-sqlparse==0.4.4
-typing_extensions==4.6.0
-tzdata==2023.3
-whitenoise==6.4.0
+idna==3.4
+kiwisolver==1.4.5
+kombu==5.3.7
+matplotlib==3.9.0
+numpy==1.26.4
+packaging==24.0
+pandas==2.2.2
+Pillow==9.3.0  # Keeping the higher version
+prompt-toolkit==3.0.43
+psycopg2-binary==2.9.5  # Keeping the higher version
+pycparser==2.21
+pyparsing==3.1.2
+python-dateutil==2.9.0.post0
+python-decouple==3.8
+pytz==2022.7
+redis==5.0.4
+requests==2.31.0
+seaborn==0.13.2
+six==1.16.0
+sqlparse==0.4.4  # Keeping the higher version
+tzdata==2023.3  # Keeping the higher version
+urllib3==1.26.16
+vine==5.1.0
+wcwidth==0.2.13
+dj-database-url==2.0.0  # Included from the new list
+typing_extensions==4.6.0  # Included from the new list
+whitenoise==6.4.0  # Included from the new list
