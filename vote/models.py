@@ -110,10 +110,10 @@ PARTY_CHOICES = (
     ('mdr', 'Movement for Democracy and Reconstruction'),
     ('rainbow', 'Rainbow Alliance'),
     ('volt', 'Vision for Liberia Transformation'),
-    ('sup', 'Students Unification Party'),
-    ('prosa', 'Progressive Student Alliance'),
-    ('sim', 'Student Integration Movement'),
-    ('stud', 'Student Democratic Alliance'),
+    ('SUP', 'Students Unification Party'),
+    ('PROSA', 'Progressive Student Alliance'),
+    ('SIM', 'Mighty Student Integration Movement'),
+    ('STUD', 'Student Democratic Alliance'),
     # Add more as necessary
 )
 
