@@ -332,7 +332,9 @@ def dashboardView(request):
     if profile.role == 'commissioner':
         elections = Election.objects.filter(commissioner=request.user)
     else:
-        elections = Election.objects.all()
+        voter_ids = Voter.objects.filter(user=request.user).values_list('election', flat=True)
+        elections = Election.objects.filter(id__in=voter_ids)
+
     return render(request, 'vote/dashboard.html', {'elections': elections})
 
 
