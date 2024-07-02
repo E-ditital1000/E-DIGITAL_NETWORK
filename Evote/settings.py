@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',  # Correctly add the comma here
+    'whitenoise.runserver_nostatic', 
     'django.contrib.staticfiles',
     'vote',
     'crispy_forms',

@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
 
+{% block title %}Register{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container mt-5">
-  <h2 class="mb-4">Registration</h2>
-  
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
-        {{ message }}
+  <div class="jumbotron p-4">
+
+    <h2 class="mb-4">User Registration</h2>
+    
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Register</button>
       </div>
-    {% endfor %}
-  {% endif %}
-  
-  <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-    {% csrf_token %}
-    {{ form|crispy }}
-  
-    <div class="mb-3">
-      <button type="submit" class="btn btn-primary">Register</button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -42,8 +46,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
-function toggle_fields() {
+  function toggle_fields() {
     var role = $('#id_role').val();
     if (role === 'commissioner') {
         $('#div_id_voter_id').hide();
@@ -55,14 +58,12 @@ function toggle_fields() {
         $('#div_id_voter_id').hide();
         $('#div_id_observer_id').show();
     }
-}
+  }
 
-$(document).ready(function() {
+  $(document).ready(function() {
     $('#id_role').change(toggle_fields);
     toggle_fields();
-});
-
+  });
 </script>
-
 
 {% endblock %}
