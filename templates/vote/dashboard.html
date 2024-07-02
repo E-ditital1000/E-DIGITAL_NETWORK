@@ -9,6 +9,7 @@
     <div class="container">
       <div class="row justify-content-center" data-aos="zoom-out">
         <div class="col-xl-7 col-lg-9 text-center">
+          <h4>{{ user.username }}</h4>
           <h1>Welcome to ElectEase</h1>
           <p>Your go-to platform for secure and efficient online voting in educational institutions.</p>
         </div>
@@ -86,7 +87,8 @@
           <p class="description">
             <strong>Start Time:</strong> {{ election.start_time|date:"M d, Y H:i" }}<br>
             <strong>End Time:</strong> {{ election.end_time|date:"M d, Y H:i" }}<br>
-            <strong>Max Voters:</strong> {{ election.max_voters }}
+            <strong>Max Voters:</strong> {{ election.max_voters }}<br>
+            <strong>Max Observers:</strong> {{ election.max_observers }}
           </p>
           <a href="{% url 'election_detail' election.id %}" class="btn btn-primary mt-2">View Details</a>
         </div>
@@ -99,6 +101,7 @@
     </div>
   </div>
 </section>
+
 
 </main>
 {% endblock %}

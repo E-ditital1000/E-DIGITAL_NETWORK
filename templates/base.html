@@ -24,6 +24,8 @@
 <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
 <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
 <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+
 
 <!-- Main CSS File -->
 <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
@@ -40,12 +42,13 @@
         <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto">
             <!-- Uncomment below if you use an image logo -->
             <!-- <img src="{% static 'assets/img/logo.png' %}" alt="Logo"> -->
-            <h1 class="sitename" ><bold>ElectEase</bold></h1>
+            <h1 class="sitename"><bold>ElectEase</bold></h1>
         </a>
-        <h2 class="dashboard-heading"> {{ user.username }}</h2>
+        <h2 class="dashboard-heading"></h2>
         <!-- Navigation Menu -->
         <nav id="navmenu" class="navmenu">
             <ul>
+              
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'dashboard' %}" class="active">DASHBOARD</a></li>
                     {% if request.user.profile.role == 'commissioner' %}
@@ -55,23 +58,49 @@
                     <li><a href="{% url 'editprofile' %}">Edit Profile</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
-                
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
-            {% endif %}
-            
-        
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
-        {% if request.user.is_authenticated %}
-            <a class="btn-getstarted" href="{% url 'result' %}">View Result</a>
-        {% else %}
-            <a class="btn-getstarted" href="{% url 'login' %}">Get Started</a>
-        {% endif %}
+        <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center">
+            <!-- Notification Bell -->
+            <div class="notification-bell position-relative ms-3" id="notification-bell">
+                <i class="bi bi-bell"></i>
+                {% if notification_count > 0 %}
+                <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">{{ notification_count }}</span>
+                {% endif %}
+            </div>
+        
+            <!-- Notification List (show on click) -->
+            <div class="notification-list position-absolute bg-white shadow p-3" id="notification-list" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6>Notifications</h6>
+                    <button id="close-notification-list" class="btn btn-link text-danger">×</button>
+                </div>
+                {% for notification in unread_notifications %}
+                <div class="notification-item">
+                    <p>{{ notification.message }}</p>
+                    <a href="{% url 'mark_notification_as_read' notification.id %}" class="btn btn-link">Mark as read</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+      
+            {% if request.user.is_authenticated %}
+                <a class="btn-getstarted" href="{% url 'result' %}">View Result</a>
+            {% else %}
+                <a class="btn-getstarted" href="{% url 'login' %}">Get Started</a>
+            {% endif %}
+           
+        </div>
     </div>
 </header>
+
 
  
  
@@ -149,6 +178,21 @@
     
 <!-- Scroll Top -->
 <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<script>
+  document.getElementById('notification-bell').addEventListener('click', function() {
+      var notificationList = document.getElementById('notification-list');
+      if (notificationList.style.display === 'none' || notificationList.style.display === '') {
+          notificationList.style.display = 'block';
+      } else {
+          notificationList.style.display = 'none';
+      }
+  });
+
+  document.getElementById('close-notification-list').addEventListener('click', function() {
+      document.getElementById('notification-list').style.display = 'none';
+  });
+</script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>

@@ -5,12 +5,18 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from .models import Profile, Election, Voter, Candidate, ControlVote
 from django import forms
-from .models import Profile, Election, Voter, Candidate, ControlVote
+from .models import Profile, Election, Voter, Observer, Candidate, ControlVote, Notification
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 import uuid
 
 def generate_unique_voter_id():
     return str(uuid.uuid4())
+
+def generate_unique_observer_id():
+    while True:
+        observer_id = str(uuid.uuid4())[:8]  # Generate a short unique ID
+        if not Observer.objects.filter(observer_id=observer_id).exists():
+            return observer_id
 
 
 class ProfileForm(forms.ModelForm):
@@ -25,11 +31,12 @@ class ProfileForm(forms.ModelForm):
 class ElectionForm(forms.ModelForm):
     class Meta:
         model = Election
-        fields = ['name', 'start_time', 'end_time', 'max_voters']
+        fields = ['name', 'start_time', 'end_time', 'max_voters', 'max_observers']  # Include 'max_observers' in fields list
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control', 'placeholder': 'Select start time'}),
             'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control', 'placeholder': 'Select end time'}),
             'max_voters': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter maximum number of voters'}),
+            'max_observers': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter maximum number of observers'}),  # Widget for max_observers
         }
 
     def clean(self):
@@ -67,9 +74,29 @@ def clean_voter_id(self):
     return voter_id
 
 
+class ObserverForm(forms.ModelForm):
+    observer_id = forms.CharField(max_length=50, required=True, label="Observer ID")
 
+    class Meta:
+        model = Observer
+        fields = ['election', 'observer_id']
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ObserverForm, self).__init__(*args, **kwargs)
+        if user and user.profile.role == 'commissioner':
+            self.fields['election'].queryset = Election.objects.filter(commissioner=user)
+            self.fields['election'].label_from_instance = lambda obj: obj.name
+            self.fields['election'].widget.attrs['class'] = 'form-control'
+        self.fields['observer_id'].widget.attrs['class'] = 'form-control'
 
+    def clean_observer_id(self):
+        observer_id = self.cleaned_data.get('observer_id')
+        if not Observer.objects.filter(observer_id=observer_id, user__isnull=True).exists():
+            # Generate a unique observer ID if the provided ID is not valid
+            observer_id = generate_unique_observer_id()
+            self.cleaned_data['observer_id'] = observer_id  # Update the cleaned data with the generated observer ID
+        return observer_id
 
 
 class CandidateForm(forms.ModelForm):
@@ -110,6 +137,7 @@ class RegistrationForm(UserCreationForm):
     age = forms.IntegerField(validators=[MinValueValidator(18), MaxValueValidator(120)])
     role = forms.ChoiceField(choices=Profile.ROLE_CHOICES)
     voter_id = forms.CharField(max_length=50, required=False, label="Voter ID")
+    observer_id = forms.CharField(max_length=50, required=False, label="Observer ID")
     terms_of_service = forms.BooleanField(
         required=True,
         error_messages={'required': 'You must agree to the Terms of Service.'}
@@ -124,7 +152,8 @@ class RegistrationForm(UserCreationForm):
         fields = (
             'username', 'email', 'password1', 'password2', 'first_name', 'last_name', 
             'university_name', 'high_school_name', 'level', 'major', 'student_id', 
-            'district', 'county', 'citizenship', 'age', 'role', 'voter_id', 'terms_of_service', 'privacy_policy'
+            'district', 'county', 'citizenship', 'age', 'role', 'voter_id', 'observer_id', 
+            'terms_of_service', 'privacy_policy'
         )
 
     def clean_email(self):
@@ -143,11 +172,26 @@ class RegistrationForm(UserCreationForm):
                 raise forms.ValidationError("Invalid or already used Voter ID.")
         return voter_id
 
+    def clean_observer_id(self):
+        role = self.cleaned_data.get('role')
+        observer_id = self.cleaned_data.get('observer_id')
+        if role == 'observer':
+            if not observer_id:
+                raise forms.ValidationError("Observer ID is required for observers.")
+            if not Observer.objects.filter(observer_id=observer_id, user__isnull=True).exists():
+                raise forms.ValidationError("Invalid or already used Observer ID.")
+        return observer_id
+
     def clean(self):
         cleaned_data = super().clean()
         role = cleaned_data.get('role')
         if role == 'commissioner':
             cleaned_data['voter_id'] = ''  # Clear voter_id field if role is commissioner
+            cleaned_data['observer_id'] = ''  # Clear observer_id field if role is commissioner
+        elif role == 'voter':
+            cleaned_data['observer_id'] = ''  # Clear observer_id field if role is voter
+        elif role == 'observer':
+            cleaned_data['voter_id'] = ''  # Clear voter_id field if role is observer
         return cleaned_data
 
     def save(self, commit=True):
@@ -204,3 +248,8 @@ class EditProfileForm(forms.ModelForm):
             'age': forms.NumberInput(attrs={'class': 'form-control'}),
             
         }
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = Notification
+        fields = ['message']

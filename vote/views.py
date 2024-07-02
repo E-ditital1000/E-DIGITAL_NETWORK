@@ -9,9 +9,9 @@ from django.utils.html import strip_tags
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from .forms import (RegistrationForm, LoginForm, ChangePasswordForm, EditProfileForm,
+from .forms import (RegistrationForm, LoginForm, ChangePasswordForm, EditProfileForm, ObserverForm, NotificationForm,
                     ElectionForm, VoterForm, CandidateForm, ControlVoteForm)
-from .models import Profile, Election, Voter, Candidate, ControlVote, Position
+from .models import Profile, Election, Voter, Candidate, ControlVote, Position, Observer, Notification
 import uuid
 from django.db.models import Q
 from django.contrib import messages
@@ -31,6 +31,21 @@ def terms_of_service(request):
 def privacy_policy(request):
     return render(request, 'vote/privacy_policy.html')
 
+def create_notification(request, election_id):
+    election = get_object_or_404(Election, id=election_id)
+    if request.method == 'POST':
+        form = NotificationForm(request.POST)
+        if form.is_valid():
+            notification = form.save(commit=False)
+            notification.election = election
+            notification.commissioner = request.user
+            notification.save()
+            messages.success(request, 'Notification created successfully.')
+            return redirect('election_detail', election_id=election.id)
+    else:
+        form = NotificationForm()
+    
+    return render(request, 'vote/notify.html', {'form': form, 'election': election})
 
 def registrationView(request):
     if request.method == 'POST':
@@ -50,16 +65,25 @@ def registrationView(request):
                 except Voter.DoesNotExist:
                     user.delete()  # Cleanup the user if voter_id is invalid
                     messages.error(request, "Invalid or already used Voter ID.")
-            elif profile.role == 'commissioner':
-                login(request, user)
-                messages.success(request, "Registration successful.")
-                return redirect('dashboard')
+            elif profile.role == 'commissioner' or profile.role == 'observer':
+                observer_id = form.cleaned_data.get('observer_id')
+                try:
+                    observer = Observer.objects.get(observer_id=observer_id, user__isnull=True)
+                    observer.user = user
+                    observer.save()
+                    login(request, user)
+                    messages.success(request, "Registration successful.")
+                    return redirect('dashboard')
+                except Observer.DoesNotExist:
+                    user.delete()  # Cleanup the user if observer_id is invalid
+                    messages.error(request, "Invalid or already used Observer ID.")
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = RegistrationForm()
     
     return render(request, 'vote/register.html', {'form': form})
+
 
 def loginView(request):
     if request.method == 'POST':
@@ -206,10 +230,6 @@ def createElectionView(request):
     return render(request, 'vote/create_election.html', {'form': form})
 
 
-
-
-
-
 @login_required
 @commissioner_only
 def createCandidateView(request, election_id):
@@ -221,7 +241,7 @@ def createCandidateView(request, election_id):
             candidate.election = election
             candidate.save()
             messages.success(request, "Candidate added successfully.")
-            return redirect('election_detail', election_id=election_id)  # Use election_id instead of pk
+            return redirect('election_detail', election_id=election_id)  
     else:
         form = CandidateForm(initial={'election': election})
     return render(request, 'vote/create_candidate.html', {'form': form, 'election': election})
@@ -274,6 +294,49 @@ def registerVoterView(request, election_id):
 
     return render(request, 'vote/register_voter.html', {'form': form, 'election': election})
 
+def generate_unique_observer_id():
+    return str(uuid.uuid4())[:8]  # Generates an 8-character long unique identifier
+
+
+@login_required
+def registerObserverView(request, election_id):
+    election = get_object_or_404(Election, pk=election_id, commissioner=request.user)
+
+    if request.method == 'POST':
+        form = ObserverForm(request.POST, user=request.user)
+        if form.is_valid():
+            observer_id = generate_unique_observer_id()
+            observer = form.save(commit=False)
+            observer.election = election
+            observer.observer_id = observer_id
+            observer.save()
+
+            # Prepare and send the email
+            context = {
+                'observer_id': observer.observer_id,
+                'election_name': election.name
+            }
+            html_content = render_to_string('email_templates/new_observer_id.html', context)
+            text_content = strip_tags(html_content)
+
+            email = EmailMultiAlternatives(
+                'New Observer ID Generated',
+                text_content,
+                settings.EMAIL_HOST_USER,
+                [election.commissioner.email]
+            )
+            email.attach_alternative(html_content, "text/html")
+            email.send(fail_silently=False)
+
+            messages.success(request, "Observer registered successfully.")
+            return redirect('election_detail', election_id=election.id)
+        else:
+            messages.error(request, "Form is not valid. Please correct the errors.")
+    else:
+        form = ObserverForm(user=request.user)  # Create form with user parameter, no need for request.POST
+
+    return render(request, 'vote/register_observer.html', {'form': form, 'election': election})
+
 
 @login_required
 @commissioner_only
@@ -316,27 +379,42 @@ def dashboardView(request):
     return render(request, 'vote/dashboard.html', {'elections': elections})
 
 
-
-
-
-from django.core.exceptions import ObjectDoesNotExist
-
 @login_required
 def dashboardView(request):
     try:
         profile = request.user.profile
     except ObjectDoesNotExist:
-        # Create profile if it doesn't exist
         profile = Profile.objects.create(user=request.user)
 
     if profile.role == 'commissioner':
         elections = Election.objects.filter(commissioner=request.user)
-    else:
+    elif profile.role == 'voter':
         voter_ids = Voter.objects.filter(user=request.user).values_list('election', flat=True)
         elections = Election.objects.filter(id__in=voter_ids)
+    elif profile.role == 'observer':
+        observer_ids = Observer.objects.filter(user=request.user).values_list('election', flat=True)
+        elections = Election.objects.filter(id__in=observer_ids)
+    else:
+        elections = Election.objects.none()
 
-    return render(request, 'vote/dashboard.html', {'elections': elections})
+    # Fetch the notifications related to these elections
+    unread_notifications = Notification.objects.filter(election__in=elections, is_read=False)
+    notification_count = unread_notifications.count()
 
+    context = {
+        'elections': elections,
+        'unread_notifications': unread_notifications,
+        'notification_count': notification_count,
+    }
+
+    return render(request, 'vote/dashboard.html', context)
+
+@login_required
+def mark_notification_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id)
+    notification.is_read = True
+    notification.save()
+    return redirect('dashboard')
 
 @login_required
 def resultView(request):
@@ -354,41 +432,54 @@ def resultView(request):
         'election_results': election_results
     })
 
-
 @login_required
 def electionDetailView(request, election_id):
     election = get_object_or_404(Election, pk=election_id)
     candidates = Candidate.objects.filter(election=election)
     voter_id = request.session.get('voter_id')
+    observer_id = request.session.get('observer_id')
 
     if request.method == 'POST':
-        voter_id = request.POST.get('voter_id')
-        try:
-            if request.user.profile.role == 'commissioner':
-                # Check if the user is the commissioner and if the provided voter_id matches their commissioner token
-                if voter_id == election.commissioner_token:
-                    request.session['voter_id'] = voter_id  # Save voter ID in session after validation
-                else:
-                    raise Voter.DoesNotExist  # Raise an exception if validation fails
-            elif request.user.profile.role == 'voter':
-                # Check if the voter ID matches the user's voter ID for this election
+        if request.user.profile.role == 'voter':
+            voter_id = request.POST.get('id_input')
+            try:
                 voter = Voter.objects.get(voter_id=voter_id, election=election, user=request.user)
-                request.session['voter_id'] = voter_id  # Save voter ID in session after validation
-            else:
-                raise Voter.DoesNotExist  # Raise an exception if the role is neither commissioner nor voter
-        except Voter.DoesNotExist:
-            messages.error(request, "Invalid Voter ID. You are not allowed to vote in this election.")
+                request.session['voter_id'] = voter_id
+            except Voter.DoesNotExist:
+                messages.error(request, "Invalid Voter ID. You are not allowed to vote in this election.")
+                return redirect('election_detail', election_id=election_id)
+
+        elif request.user.profile.role == 'observer':
+            observer_id = request.POST.get('id_input')
+            try:
+                observer = Observer.objects.get(observer_id=observer_id, election=election, user=request.user)
+                request.session['observer_id'] = observer_id
+            except Observer.DoesNotExist:
+                messages.error(request, "Invalid Observer ID. You are not allowed to observe this election.")
+                return redirect('election_detail', election_id=election_id)
+
+    if request.user.profile.role == 'voter' and not voter_id:
+        return render(request, 'vote/voter_id_prompt.html', {'election': election})
+    
+    if request.user.profile.role == 'observer' and not observer_id:
+        # Check if the maximum number of observers has been reached
+        current_observers_count = Observer.objects.filter(election=election).count()
+        if current_observers_count >= election.max_observers:
+            messages.error(request, f"Maximum number of observers ({election.max_observers}) has been reached for this election.")
             return redirect('election_detail', election_id=election_id)
 
-    if not voter_id:
         return render(request, 'vote/voter_id_prompt.html', {'election': election})
 
-    # Prepare data for Chart.js
+    # Fetch details for rendering
     candidate_names = [candidate.name for candidate in candidates]
     votes = [candidate.total_vote for candidate in candidates]
     total_voters_set = election.max_voters
     total_voters_with_id = election.voters.count()
     remaining_voters = total_voters_set - total_voters_with_id
+
+    observers = Observer.objects.filter(election=election)
+    observer_names = [f"{observer.user.first_name} {observer.user.last_name}" if observer.user else "Unknown" for observer in observers]
+    observer_count = len(observers)
 
     return render(request, 'vote/election_detail.html', {
         'election': election,
@@ -399,8 +490,9 @@ def electionDetailView(request, election_id):
         'total_voters_set': total_voters_set,
         'total_voters_with_id': total_voters_with_id,
         'remaining_voters': remaining_voters,
+        'observer_names': observer_names,
+        'observer_count': observer_count,
     })
-
 
 
 
@@ -459,4 +551,104 @@ def validateVoterId(request):
             return JsonResponse({'is_valid': False})
     return JsonResponse({'is_valid': False})
 
+@login_required
+def validateObserverId(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        observer_id = data.get('observer_id')
+        election_id = data.get('election_id')
+        election = get_object_or_404(Election, pk=election_id)
+        try:
+            Observer.objects.get(user=request.user, election=election, observer_id=observer_id)
+            return JsonResponse({'is_valid': True})
+        except Observer.DoesNotExist:
+            return JsonResponse({'is_valid': False})
+    return JsonResponse({'is_valid': False})
 
+from django.shortcuts import render
+from django.http import HttpResponse
+import csv
+from .models import Election, Profile
+
+def generate_report(request, election_id):
+    try:
+        election = Election.objects.get(id=election_id)
+    except Election.DoesNotExist:
+        # Handle case where election with given ID does not exist
+        # You can customize this based on your application's needs
+        return HttpResponse("Election does not exist", status=404)
+
+    # Fetch election details, candidates, voters, observers, etc.
+    commissioner_username = election.commissioner.username if election.commissioner else "No Commissioner Assigned"
+    candidates = election.candidates.all()
+    voters = election.voters.all()
+    observers = election.observers.all()
+
+    # Create a CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="election_report_{election_id}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Election Name', 'Commissioner', 'Start Time', 'End Time', 'Max Voters', 'Max Observers'])
+
+    writer.writerow([
+        election.name,
+        commissioner_username,
+        election.start_time,
+        election.end_time,
+        election.max_voters,
+        election.max_observers
+    ])
+
+    writer.writerow([])
+    writer.writerow(['Candidates'])
+    writer.writerow(['Name', 'Position', 'Party', 'Total Votes'])
+    for candidate in candidates:
+        writer.writerow([
+            candidate.name,
+            candidate.position.title,
+            candidate.party,
+            candidate.total_vote
+        ])
+
+    writer.writerow([])
+    writer.writerow(['Voters'])
+    writer.writerow(['Username', 'First Name', 'Last Name', 'Voter ID'])
+    for voter in voters:
+        # Fetch first_name and last_name from Profile if available
+        if voter.user:
+            profile = Profile.objects.filter(user=voter.user).first()
+            first_name = profile.first_name if profile else ""
+            last_name = profile.last_name if profile else ""
+        else:
+            first_name = ""
+            last_name = ""
+        
+        writer.writerow([
+            voter.user.username if voter.user else "No User",
+            first_name,
+            last_name,
+            voter.voter_id
+        ])
+
+    writer.writerow([])
+    writer.writerow(['Observers'])
+    writer.writerow(['Username', 'First Name', 'Last Name', 'Observer ID'])
+    for observer in observers:
+        # Fetch first_name and last_name from Profile if available
+        if observer.user:
+            profile = Profile.objects.filter(user=observer.user).first()
+            first_name = profile.first_name if profile else ""
+            last_name = profile.last_name if profile else ""
+        else:
+            first_name = ""
+            last_name = ""
+
+        writer.writerow([
+            observer.user.username if observer.user else "No User",
+            first_name,
+            last_name,
+            observer.observer_id
+        ])
+
+    return response

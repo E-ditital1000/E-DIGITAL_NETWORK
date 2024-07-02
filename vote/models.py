@@ -10,7 +10,7 @@ import uuid
 
 
 class Position(models.Model):
-    title = models.CharField(max_length=50, verbose_name="Position Title")
+    title = models.CharField(max_length=100, verbose_name="Position Title")
 
     class Meta:
         verbose_name = "Position"
@@ -25,6 +25,7 @@ class Profile(models.Model):
     ROLE_CHOICES = (
         ('commissioner', 'Election Commissioner'),
         ('voter', 'Voter'),
+        ('observer', 'Observer'),
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', null=True, blank=True)
@@ -50,14 +51,17 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.user.username})"
 
+
+
 class Election(models.Model):
     name = models.CharField(max_length=100)
     commissioner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='elections')
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     max_voters = models.IntegerField()
+    max_observers = models.IntegerField(default=0)  # New field for maximum number of observers
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)  # Unique identifier
-    commissioner_token = models.CharField(default=None, max_length=50, unique=True)  # Add this field for commissioner token
+    commissioner_token = models.CharField(default=None, max_length=50, unique=True)  # Commissioner token field
 
     def __str__(self):
         return self.name
@@ -75,6 +79,15 @@ def generate_commissioner_token():
     """Generate a unique token for the commissioner."""
     return uuid.uuid4().hex[:8]  # Generates an 8-character long unique identifier
 
+
+class Notification(models.Model):
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)  # New field to track read status
+
+    def __str__(self):
+        return self.message
 
 class Voter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='voters', null=True, blank=True)
@@ -98,18 +111,28 @@ def custom_user_str(self):
     return f"{self.profile.first_name} {self.profile.last_name} ({self.username})"
 
 User.add_to_class("__str__", custom_user_str)
+
+
+class Observer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='observers', null=True, blank=True)
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='observers')
+    observer_id = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return "{} - {}".format(self.user.username if self.user else "No User", self.election.name)
+
     
 PARTY_CHOICES = (
-    ('up', 'Unity Party'),
-    ('lp', 'Liberty Party'),
-    ('anc', 'Alternative National Congress'),
-    ('cdc', 'Coalition for Democratic Change'),
-    ('pup', 'People’s Unification Party'),
-    ('alp', 'All Liberian Party'),
-    ('movee', 'Movement for Economic Empowerment'),
-    ('mdr', 'Movement for Democracy and Reconstruction'),
-    ('rainbow', 'Rainbow Alliance'),
-    ('volt', 'Vision for Liberia Transformation'),
+    ('UP', 'Unity Party'),
+    ('LP', 'Liberty Party'),
+    ('ANC', 'Alternative National Congress'),
+    ('CDC', 'Coalition for Democratic Change'),
+    ('PUP', 'People’s Unification Party'),
+    ('ALP', 'All Liberian Party'),
+    ('MOVEE', 'Movement for Economic Empowerment'),
+    ('MDR', 'Movement for Democracy and Reconstruction'),
+    ('Rainbow', 'Rainbow Alliance'),
+    ('vOLT', 'Vision for Liberia Transformation'),
     ('SUP', 'Students Unification Party'),
     ('PROSA', 'Progressive Student Alliance'),
     ('SIM', 'Mighty Student Integration Movement'),

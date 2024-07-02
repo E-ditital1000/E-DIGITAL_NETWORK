@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Register Observer{% endblock %}
+{% block content %}
+<main class="main">
+  <section class="section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title text-center">Register Observer for {{ election.name }}</h2>
+              {% if messages %}
+              {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+              {% endif %}
+              <form method="post">
+                {% csrf_token %}
+                {{ form.media }}
+                {{ form|crispy }}
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Register Observer</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

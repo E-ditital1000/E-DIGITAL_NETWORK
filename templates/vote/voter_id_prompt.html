@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Enter Voter ID{% endblock %}
+{% block title %}Enter ID{% endblock %}
 {% block content %}
 <main class="main">
     <section class="section">
@@ -9,23 +9,33 @@
                     <div class="card">
                         <div class="card-body">
                             {% if request.user.profile.role == 'voter' %}
-                            <h2 class="card-title text-center">Enter Voter ID</h2>
-                        {% elif request.user.profile.role == 'commissioner' %}
-                            <h2 class="card-title text-center">Enter Commissioner Token</h2>
-                        {% endif %}
+                                <h2 class="card-title text-center">Enter Voter ID</h2>
+                            {% elif request.user.profile.role == 'commissioner' %}
+                                <h2 class="card-title text-center">Enter Commissioner Token</h2>
+                            {% elif request.user.profile.role == 'observer' %}
+                                <h2 class="card-title text-center">Enter Observer ID</h2>
+                            {% endif %}
                             {% if messages %}
-                            {% for message in messages %}
-                              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
-                                {{ message }}
-                              </div>
-                            {% endfor %}
-                          {% endif %}
-                          
+                                {% for message in messages %}
+                                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
-                                    <label for="voter_id">Voter ID:</label>
-                                    <input type="text" class="form-control" id="voter_id" name="voter_id" required>
+                                    <label for="id_input">
+                                        {% if request.user.profile.role == 'voter' %}
+                                            Voter ID
+                                        {% elif request.user.profile.role == 'commissioner' %}
+                                            Commissioner Token
+                                        {% elif request.user.profile.role == 'observer' %}
+                                            Observer ID
+                                        {% endif %}
+                                    </label>
+                                    <input type="text" class="form-control" id="id_input" name="id_input" required>
                                 </div>
                                 <div class="text-center mt-3">
                                     <button type="submit" class="btn btn-primary">Submit</button>

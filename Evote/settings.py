@@ -119,23 +119,16 @@ WSGI_APPLICATION = 'Evote.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
 
 
 # Initialize environment variables
 env = environ.Env(
-    DATABASE_ENGINE=(str, 'django.db.backends.postgresql'),
-    DATABASE_NAME=(str, ''),
-    DATABASE_USER=(str, ''),
-    DATABASE_PASSWORD=(str, ''),
-    DATABASE_HOST=(str, ''),
-    DATABASE_PORT=(int, 5432),
-
     EMAIL_BACKEND=(str, 'django.core.mail.backends.smtp.EmailBackend'),
     EMAIL_HOST=(str, 'smtp.gmail.com'),
     EMAIL_PORT=(int, 587),
@@ -146,17 +139,7 @@ env = environ.Env(
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# Database configuration
-DATABASES = {
-    'default': {
-        'ENGINE': env('DATABASE_ENGINE'),
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': env('DATABASE_HOST'),
-        'PORT': env('DATABASE_PORT'),
-    }
-}
+
 
 # Email configuration
 EMAIL_BACKEND = env('EMAIL_BACKEND')
@@ -180,14 +163,22 @@ DATABASES = {
     }
 }
 
-# Email configuration
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-EMAIL_USE_SSL = env('EMAIL_USE_SSL')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# env = environ.Env(
+#     DATABASE_ENGINE=(str, 'django.db.backends.postgresql'),
+#     DATABASE_NAME=(str, ''),
+#     DATABASE_USER=(str, ''),
+#     DATABASE_PASSWORD=(str, ''),
+#     DATABASE_HOST=(str, ''),
+#     DATABASE_PORT=(int, 5432),
+
+#     EMAIL_BACKEND=(str, 'django.core.mail.backends.smtp.EmailBackend'),
+#     EMAIL_HOST=(str, 'smtp.gmail.com'),
+#     EMAIL_PORT=(int, 587),
+#     EMAIL_USE_TLS=(bool, True),
+#     EMAIL_USE_SSL=(bool, False),
+#     EMAIL_HOST_USER=(str, ''),
+#     EMAIL_HOST_PASSWORD=(str, ''),
+# )
 
 
 # Password validation

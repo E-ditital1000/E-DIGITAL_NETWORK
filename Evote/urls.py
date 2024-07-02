@@ -37,6 +37,7 @@ urlpatterns = [
     path('editprofile/', views.editProfileView, name='editprofile'),
     path('create-election/', views.createElectionView, name='create_election'),
     path('register-voter/<int:election_id>/', views.registerVoterView, name='register_voter'),
+    path('register_observer/<int:election_id>/', views.registerObserverView, name='register_observer'),
     path('election/<int:election_id>/', views.electionDetailView, name='election_detail'),
     path('election/<int:election_id>/create-candidate/', views.createCandidateView, name='create_candidate'),
     path('create-control-vote/<int:election_id>/', views.createControlVoteView, name='create_control_vote'),
@@ -45,6 +46,9 @@ urlpatterns = [
     path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('user-autocomplete/', autocomplete.Select2ListView.as_view(), name='user-autocomplete'),
+    path('election/<int:election_id>/report/', views.generate_report, name='generate_report'),
+    path('election/<int:election_id>/create_notification/', views.create_notification, name='create_notification'),
+    path('notification/read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notification_as_read'),
     
 ]
 

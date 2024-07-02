@@ -5,6 +5,8 @@
     .card {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
     }
     .card-body {
         padding: 20px;
@@ -20,7 +22,18 @@
         margin: 5px;
     }
     .img-fluid {
-        border-radius: 10px 10px 0 0;
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .main {
+        padding: 20px;
+    }
+    .section {
+        margin-top: 20px;
+    }
+    .table {
+        margin-top: 20px;
     }
     @media (max-width: 767.98px) {
         .card-body {
@@ -46,12 +59,17 @@
               <p><strong>Start Time:</strong> {{ election.start_time }}</p>
               <p><strong>End Time:</strong> {{ election.end_time }}</p>
               <p><strong>Max Voters:</strong> {{ election.max_voters }}</p>
+              <p><strong>Max Observers:</strong> {{ election.max_observers }}</p>
               <div class="text-center mt-3">
-                <a href="{% url 'dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+
                 {% if request.user.profile.role == 'commissioner' %}
                 <a href="{% url 'create_candidate' election.id %}" class="btn btn-success">Create Candidate</a>
                 <a href="{% url 'register_voter' election.id %}" class="btn btn-success">Register Voter</a>
-                {% endif %}
+                <a href="{% url 'register_observer' election.id %}" class="btn btn-success">Register Observer</a>
+                <a href="{% url 'generate_report' election.id %}" class="btn btn-info">Download Report</a>
+                <a href="{% url 'create_notification' election.id %}" class="btn btn-warning">Send Notification</a>
+            {% endif %}
+            
               </div>
               <hr>
               <h3 class="text-center">Candidates</h3>
@@ -61,12 +79,12 @@
                   {{ message }}
                 </div>
               {% endfor %}
-            {% endif %}
+              {% endif %}
               <div class="row">
                 {% for candidate in candidates %}
                 <div class="col-md-6">
                   <div class="card mb-4">
-                    <div class="card-img-top img-fluid" style="background-image: url('{{ candidate.image.url }}'); height: 200px; background-size: cover; background-position: center;"></div>
+                    <div class="card-img-top img-fluid" style="background-image: url('{{ candidate.image.url }}');"></div>
                     <div class="card-body">
                       <h5 class="card-title">{{ candidate.name }}</h5>
                       <p class="card-text"><strong>Position:</strong> {{ candidate.position.title }}</p>
@@ -87,7 +105,7 @@
                             {% endif %}
                         </form>
                         {% endif %}
-                    </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -108,6 +126,24 @@
                   <tr>
                     <td>{{ voter.user.username }}</td>
                     <td>{{ voter.voter_id }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <hr>
+              <h3 class="text-center">Observer List</h3>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Observer Name</th>
+                    <th>Observer ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for observer in election.observers.all %}
+                  <tr>
+                    <td>{{ observer.user.username }}</td>
+                    <td>{{ observer.observer_id }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -136,8 +172,9 @@
               <hr>
               <h3 class="text-center">Vote Analysis</h3>
               <div class="text-center">
+                <canvas id="observerChart"></canvas>
                 <canvas id="voteChart"></canvas>
-                <canvas id="voterChart"></canvas> <!-- Add a new canvas element for the voter analysis -->
+                <canvas id="voterChart"></canvas>
               </div>
             </div>
           </div>
@@ -171,27 +208,48 @@
         }
     });
 
-
-const voterCtx = document.getElementById('voterChart').getContext('2d');  // New context for the voter chart
-const voterChart = new Chart(voterCtx, {
-    type: 'bar',
-    data: {
-        labels: ['Total Voters Set', 'Voters with ID', 'Remaining Voters'],
-        datasets: [{
-            label: 'Voter Analysis',
-            data: [{{ total_voters_set }}, {{ total_voters_with_id }}, {{ remaining_voters }}],
-            backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(192, 75, 75, 0.2)', 'rgba(192, 192, 75, 0.2)'],
-            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(192, 75, 75, 1)', 'rgba(192, 192, 75, 1)'],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
+    const voterCtx = document.getElementById('voterChart').getContext('2d'); 
+    const voterChart = new Chart(voterCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Voters Set', 'Voters with ID', 'Remaining Voters'],
+            datasets: [{
+                label: 'Voter Analysis',
+                data: [{{ total_voters_set }}, {{ total_voters_with_id }}, {{ remaining_voters }}],
+                backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(192, 75, 75, 0.2)', 'rgba(192, 192, 75, 0.2)'],
+                borderColor: ['rgba(75, 192, 192, 1)', 'rgba(192, 75, 75, 1)', 'rgba(192, 192, 75, 1)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
             }
         }
-    }
-});
+    });
+
+    const observerCtx = document.getElementById('observerChart').getContext('2d');
+    const observerChart = new Chart(observerCtx, {
+        type: 'bar',
+        data: {
+            labels: {% if observer_names %} {{ observer_names|safe }} {% else %} ['No Observers'] {% endif %},
+            datasets: [{
+                label: 'Observers in Election',
+                data: {% if observer_count %} {{ observer_count|safe }} {% else %} [0] {% endif %},
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}
