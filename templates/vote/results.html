@@ -17,26 +17,28 @@
                   <p><strong>Start Time:</strong> {{ result.election.start_time }}</p>
                   <p><strong>End Time:</strong> {{ result.election.end_time }}</p>
                   <h4 class="mt-3">Candidates</h4>
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Candidate</th>
-                        <th>Position</th>
-                        <th>Party</th>
-                        <th>Total Votes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for candidate in result.candidates %}
-                      <tr>
-                        <td>{{ candidate.name }}</td>
-                        <td>{{ candidate.position.title }}</td>
-                        <td>{{ candidate.party }}</td>
-                        <td>{{ candidate.total_vote }}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Candidate</th>
+                          <th>Position</th>
+                          <th>Party</th>
+                          <th>Total Votes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for candidate in result.candidates %}
+                        <tr>
+                          <td>{{ candidate.name }}</td>
+                          <td>{{ candidate.position.title }}</td>
+                          <td>{{ candidate.party }}</td>
+                          <td>{{ candidate.total_vote }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
               {% endfor %}
