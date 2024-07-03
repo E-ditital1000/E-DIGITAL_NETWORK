@@ -108,6 +108,12 @@ class CandidateForm(forms.ModelForm):
             'party': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(CandidateForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['election'].queryset = Election.objects.filter(commissioner=user)
+
 class ControlVoteForm(forms.ModelForm):
     class Meta:
         model = ControlVote
@@ -172,6 +178,7 @@ class RegistrationForm(UserCreationForm):
                 raise forms.ValidationError("Invalid or already used Voter ID.")
         return voter_id
 
+    
     def clean_observer_id(self):
         role = self.cleaned_data.get('role')
         observer_id = self.cleaned_data.get('observer_id')

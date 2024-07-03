@@ -51,8 +51,23 @@ def registrationView(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.save()
             profile = user.profile
+            profile.first_name = form.cleaned_data['first_name']
+            profile.last_name = form.cleaned_data['last_name']
+            profile.university_name = form.cleaned_data['university_name']
+            profile.high_school_name = form.cleaned_data['high_school_name']
+            profile.level = form.cleaned_data['level']
+            profile.major = form.cleaned_data['major']
+            profile.student_id = form.cleaned_data['student_id']
+            profile.district = form.cleaned_data['district']
+            profile.county = form.cleaned_data['county']
+            profile.citizenship = form.cleaned_data['citizenship']
+            profile.age = form.cleaned_data['age']
+            profile.role = form.cleaned_data['role']
+            profile.save()
+            
             if profile.role == 'voter':
                 voter_id = form.cleaned_data.get('voter_id')
                 try:
@@ -65,7 +80,7 @@ def registrationView(request):
                 except Voter.DoesNotExist:
                     user.delete()  # Cleanup the user if voter_id is invalid
                     messages.error(request, "Invalid or already used Voter ID.")
-            elif profile.role == 'commissioner' or profile.role == 'observer':
+            elif profile.role == 'observer':
                 observer_id = form.cleaned_data.get('observer_id')
                 try:
                     observer = Observer.objects.get(observer_id=observer_id, user__isnull=True)
@@ -77,13 +92,16 @@ def registrationView(request):
                 except Observer.DoesNotExist:
                     user.delete()  # Cleanup the user if observer_id is invalid
                     messages.error(request, "Invalid or already used Observer ID.")
+            elif profile.role == 'commissioner':
+                login(request, user)
+                messages.success(request, "Registration successful.")
+                return redirect('dashboard')
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = RegistrationForm()
     
     return render(request, 'vote/register.html', {'form': form})
-
 
 def loginView(request):
     if request.method == 'POST':
@@ -233,9 +251,9 @@ def createElectionView(request):
 @login_required
 @commissioner_only
 def createCandidateView(request, election_id):
-    election = get_object_or_404(Election, pk=election_id)
+    election = get_object_or_404(Election, pk=election_id, commissioner=request.user)
     if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
+        form = CandidateForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             candidate = form.save(commit=False)
             candidate.election = election
@@ -243,8 +261,9 @@ def createCandidateView(request, election_id):
             messages.success(request, "Candidate added successfully.")
             return redirect('election_detail', election_id=election_id)  
     else:
-        form = CandidateForm(initial={'election': election})
+        form = CandidateForm(initial={'election': election}, user=request.user)
     return render(request, 'vote/create_candidate.html', {'form': form, 'election': election})
+
 
 
 import uuid
