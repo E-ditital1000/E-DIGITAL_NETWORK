@@ -135,7 +135,7 @@ PARTY_CHOICES = (
     ('vOLT', 'Vision for Liberia Transformation'),
     ('SUP', 'Students Unification Party'),
     ('PROSA', 'Progressive Student Alliance'),
-    ('SIM', 'Mighty Student Integration Movement'),
+    ('SIM', 'Mighty Student Integration Movement (SIM)'),
     ('STUD', 'Student Democratic Alliance'),
     # Add more as necessary
 )

@@ -54,11 +54,12 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'cloudinary',
     'cloudinary_storage',
+  
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
+ 
 # Cloudinary Configuration
 cloudinary.config(
     cloud_name='dkhobecps',
